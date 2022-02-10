@@ -1,5 +1,4 @@
 hs.window.animationDuration = 0
-hs.window.setFrameCorrectness = true
 
 local laptopScreen = "Built-in Retina Display"
 local vScreen = "S23C570"
