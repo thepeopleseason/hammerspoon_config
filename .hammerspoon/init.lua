@@ -74,6 +74,12 @@ layouts = {
   pcm2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
     {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
+    {"Google Chrome", nil, dellScreen, geos["llarge"], nil, nil},
+    {"Terminal", nil, dellScreen, geos["rthird"], nil, nil},
+  },
+  code2 = {
+    {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
+    {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
     {"Google Chrome", nil, dellScreen, geos["rlarge"], nil, nil},
     {"Terminal", nil, dellScreen, geos["lthird"], nil, nil},
   },
