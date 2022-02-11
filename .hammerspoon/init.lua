@@ -38,13 +38,32 @@ geos = {
   bthird = hs.geometry.unitrect(0.0, 0.66, 1.0, 0.34),
 
   term = hs.geometry.unitrect(0.0, 0.0, 0.29, 0.99),
-  termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99)
+  termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99),
 }
 
 layouts = {
+  laptop = {
+    {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
+    {"Google Chrome", nil, laptopScreen, geos["fs"], nil, nil},
+    {"Terminal", nil, laptopScreen, geos["term"], nil, nil},
+  },
   zoombrowse = {
     {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
     {"Google Chrome", nil, dellScreen, geos["rlarge"], nil, nil},
+  },
+  home3 = {
+    {"Slack", nil, vScreen, geos["blarge"], nil, nil},
+    {"Spotify", nil, laptopScreen, geos["fs"], nil, nil},
+    {"Safari", nil, laptopScreen, geos["fs"], nil, nil},
+    {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
+  },
+  home3_chrome = {
+    {geos["lhalf"], dellScreen},
+    {geos["rhalf"], dellScreen},
+  },
+  home3_term = {
+    {geos["tthird"], vScreen},
+    {geos["term"], dellScreen},
   },
 }
 
@@ -104,6 +123,15 @@ local function getTerminals()
   return terms
 end
 
+local function layout_app(wins, layout)
+  for i, win in ipairs(wins) do
+    local layout_index = i
+    if layout_index > #layout then layout_index = #layout end
+    win:moveToScreen(layout[layout_index][2])
+    win:move(layout[layout_index][1])
+  end
+end
+
 local function next_position(t, urect)
   local next_index = 1
   local cur_index = table.indexOf(t, hs.geometry.unitrect(urect))
@@ -121,62 +149,25 @@ local function chain(t, win)
   win:move(next_position(t, current_window_rect(win)))
 end
 
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "d", function()
-  local dateString = os.date('%Y-%m-%d')
-  hs.eventtap.keyStrokes(dateString)
-end)
+local function adjust(dim, amt)
+  local win = hs.window.focusedWindow()
+  local f = win:frame()
+  f[dim] = f[dim] + amt
+  win:setFrame(f)
+end
+
 
 -- resize bindings
-hs.hotkey.bind({"ctrl", "alt"}, "left", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.w = f.w - 20
-  win:setFrame(f)
-end)
-hs.hotkey.bind({"ctrl", "alt"}, "right", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.w = f.w + 20
-  win:setFrame(f)
-end)
-hs.hotkey.bind({"ctrl", "alt"}, "up", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.h = f.h - 20
-  win:setFrame(f)
-end)
-hs.hotkey.bind({"ctrl", "alt"}, "down", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.h = f.h + 20
-  win:setFrame(f)
-end)
+hs.hotkey.bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
+hs.hotkey.bind({"ctrl", "alt"}, "right", function () adjust("w", 20) end)
+hs.hotkey.bind({"ctrl", "alt"}, "up", function () adjust("h", -20) end)
+hs.hotkey.bind({"ctrl", "alt"}, "down", function () adjust("h", 20) end)
 
 -- nudge bindings
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "left", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.x = f.x - 50
-  win:setFrame(f)
-end)
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "right", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.x = f.x + 50
-  win:setFrame(f)
-end)
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "up", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.y = f.y - 50
-  win:setFrame(f)
-end)
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "down", function ()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  f.y = f.y + 50
-  win:setFrame(f)
-end)
+hs.hotkey.bind({"ctrl", "alt", "shift"}, "left", function () adjust("x", -50) end)
+hs.hotkey.bind({"ctrl", "alt", "shift"}, "right", function () adjust("x", 50) end)
+hs.hotkey.bind({"ctrl", "alt", "shift"}, "up", function () adjust("y", -50) end)
+hs.hotkey.bind({"ctrl", "alt", "shift"}, "down", function () adjust("y", 50) end)
 
 -- throw bindings
 hs.hotkey.bind({"cmd", "alt", "ctrl"}, "left", function()
@@ -195,8 +186,20 @@ hs.hotkey.bind({"ctrl", "shift"}, "Right", function() chain(full_grid) end)
 hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
 
 hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
-hs.hotkey.bind({"cmd", "alt"}, "q", function() hs.layout.apply(layouts["zoombrowse"]) end)
-hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
 
+-- layout bindings
+hs.hotkey.bind({"cmd", "alt"}, "q", function() hs.layout.apply(layouts["zoombrowse"]) end)
+hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
+hs.hotkey.bind({"cmd", "alt"}, "3", function()
+  hs.layout.apply(layouts["home3"])
+  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["home3_chrome"])
+  layout_app(getTerminals(), layouts["home3_term"])
+end)
+
+-- utility bindings
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "d", function()
+  hs.eventtap.keyStrokes(os.date('%Y-%m-%d'))
+end)
+hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
 hs.alert.show("Config loaded")
 
