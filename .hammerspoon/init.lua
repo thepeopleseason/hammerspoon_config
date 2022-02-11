@@ -65,6 +65,44 @@ layouts = {
     {geos["tthird"], vScreen},
     {geos["term"], dellScreen},
   },
+  v2 = {
+    {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
+    {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
+    {"Google Chrome", nil, vScreen, geos["blarge"], nil, nil},
+    {"Terminal", nil, vScreen, geos["tthird"], nil, nil},
+  },
+  pcm2 = {
+    {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
+    {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
+    {"Google Chrome", nil, dellScreen, geos["rlarge"], nil, nil},
+    {"Terminal", nil, dellScreen, geos["lthird"], nil, nil},
+  },
+  filemgmt = {
+    {"Google Chrome", nil, dellScreen, geos["rhalf"], nil, nil},
+    {"Terminal", nil, dellScreen, geos["rhalf"], nil, nil},
+  },
+  filemgmt_finder = {
+    {geos["ltq"], dellScreen},
+    {geos["lbq"], dellScreen},
+  },
+  chrome2 = {
+    {geos["lhalf"], dellScreen},
+    {geos["rhalf"], dellScreen},
+  },
+  chrome4 = {
+    {geos["ltq"], dellScreen},
+    {geos["rtq"], dellScreen},
+    {geos["lbq"], dellScreen},
+    {geos["rbq"], dellScreen},
+  },
+  chrome6 = {
+    {geos["ltthird"], dellScreen},
+    {geos["mtthird"], dellScreen},
+    {geos["rtthird"], dellScreen},
+    {geos["lbthird"], dellScreen},
+    {geos["mbthird"], dellScreen},
+    {geos["rbthird"], dellScreen},
+  },
 }
 
 left = { geos["lhalf"], geos["llarge"], geos["lthird"] }
@@ -185,15 +223,29 @@ hs.hotkey.bind({"cmd", "alt"}, "Down", function() chain(down) end)
 hs.hotkey.bind({"ctrl", "shift"}, "Right", function() chain(full_grid) end)
 hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
 
-hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
-
 -- layout bindings
+hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
 hs.hotkey.bind({"cmd", "alt"}, "q", function() hs.layout.apply(layouts["zoombrowse"]) end)
+hs.hotkey.bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
+hs.hotkey.bind({"cmd", "alt"}, "m", function()
+  hs.layout.apply(layouts["filemgmt"])
+  layout_app(hs.application.get("Finder"):allWindows(), layouts["filemgmt_finder"])
+end)
 hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
+hs.hotkey.bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "3", function()
   hs.layout.apply(layouts["home3"])
   layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["home3_chrome"])
   layout_app(getTerminals(), layouts["home3_term"])
+end)
+hs.hotkey.bind({"cmd", "alt"}, "h", function()
+  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome2"])
+end)
+hs.hotkey.bind({"cmd", "alt"}, "4", function()
+  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome4"])
+end)
+hs.hotkey.bind({"cmd", "alt"}, "6", function()
+  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome6"])
 end)
 
 -- utility bindings
