@@ -1,19 +1,21 @@
 hs.window.animationDuration = 0
 
+-- define screens
 local laptopScreen = "Built-in Retina Display"
 local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 
+-- general geometry definitions
 geos = {
   fs = hs.geometry.unitrect(0.0, 0.0, 1.0, 1.0),
   llarge = hs.geometry.unitrect(0.0, 0.0, 0.66, 1.0),
   lhalf = hs.geometry.unitrect(0.0, 0.0, 0.5, 1.0),
-  rlarge = hs.geometry.unitrect(0.34, 0.0, 0.66, 1.0),
+  rlarge = hs.geometry.unitrect(0.33, 0.0, 0.66, 1.0),
   rhalf = hs.geometry.unitrect(0.5, 0.0, 0.5, 1.0),
 
   tlarge = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.66),
   thalf = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.5),
-  blarge = hs.geometry.unitrect(0.0, 0.34, 1.0, 0.66),
+  blarge = hs.geometry.unitrect(0.0, 0.33, 1.0, 0.66),
   bhalf = hs.geometry.unitrect(0.0, 0.5, 1.0, 0.5),
 
   ltq = hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),
@@ -21,27 +23,29 @@ geos = {
   rtq = hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
   rbq = hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5),
 
-  lthird = hs.geometry.unitrect(0.0, 0.0, 0.34, 1.0),
-  mthird = hs.geometry.unitrect(0.34, 0.0, 0.34, 1.0),
-  rthird = hs.geometry.unitrect(0.66, 0.0, 0.34, 1.0),
+  lthird = hs.geometry.unitrect(0.0, 0.0, 0.33, 1.0),
+  mthird = hs.geometry.unitrect(0.33, 0.0, 0.33, 1.0),
+  rthird = hs.geometry.unitrect(0.66, 0.0, 0.33, 1.0),
 
-  ltthird = hs.geometry.unitrect(0.0, 0.0, 0.34, 0.5),
-  mtthird = hs.geometry.unitrect(0.34, 0.0, 0.34, 0.5),
-  rtthird = hs.geometry.unitrect(0.66, 0.0, 0.34, 0.5),
+  ltthird = hs.geometry.unitrect(0.0, 0.0, 0.33, 0.5),
+  mtthird = hs.geometry.unitrect(0.33, 0.0, 0.33, 0.5),
+  rtthird = hs.geometry.unitrect(0.66, 0.0, 0.33, 0.5),
 
-  lbthird = hs.geometry.unitrect(0.0, 0.5, 0.34, 0.5),
-  mbthird = hs.geometry.unitrect(0.34, 0.5, 0.34, 0.5),
-  rbthird = hs.geometry.unitrect(0.66, 0.5, 0.34, 0.5),
+  lbthird = hs.geometry.unitrect(0.0, 0.5, 0.33, 0.5),
+  mbthird = hs.geometry.unitrect(0.33, 0.5, 0.33, 0.5),
+  rbthird = hs.geometry.unitrect(0.66, 0.5, 0.33, 0.5),
 
-  tthird = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.34),
-  cthird = hs.geometry.unitrect(0.0, 0.34, 1.0, 0.34),
-  bthird = hs.geometry.unitrect(0.0, 0.66, 1.0, 0.34),
+  tthird = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.33),
+  cthird = hs.geometry.unitrect(0.0, 0.33, 1.0, 0.33),
+  bthird = hs.geometry.unitrect(0.0, 0.66, 1.0, 0.33),
 
   term = hs.geometry.unitrect(0.0, 0.0, 0.29, 0.99),
   termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99),
 }
 
+-- layouts for use with hs.layout.apply() and layout_app()
 layouts = {
+  -- hs.layout.apply() layouts
   laptop = {
     {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
     {"Google Chrome", nil, laptopScreen, geos["fs"], nil, nil},
@@ -56,14 +60,6 @@ layouts = {
     {"Spotify", nil, laptopScreen, geos["fs"], nil, nil},
     {"Safari", nil, laptopScreen, geos["fs"], nil, nil},
     {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
-  },
-  home3_chrome = {
-    {geos["lhalf"], dellScreen},
-    {geos["rhalf"], dellScreen},
-  },
-  home3_term = {
-    {geos["tthird"], vScreen},
-    {geos["term"], dellScreen},
   },
   v2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
@@ -86,6 +82,16 @@ layouts = {
   filemgmt = {
     {"Google Chrome", nil, dellScreen, geos["rhalf"], nil, nil},
     {"Terminal", nil, dellScreen, geos["rhalf"], nil, nil},
+  },
+
+  -- layout_app() layouts
+  home3_chrome = {
+    {geos["lhalf"], dellScreen},
+    {geos["rhalf"], dellScreen},
+  },
+  home3_term = {
+    {geos["tthird"], vScreen},
+    {geos["term"], dellScreen},
   },
   filemgmt_finder = {
     {geos["ltq"], dellScreen},
@@ -116,6 +122,7 @@ layouts = {
   },
 }
 
+-- chain sequences (see chain() function below)
 left = { geos["lhalf"], geos["llarge"], geos["lthird"] }
 right = { geos["rhalf"], geos["rlarge"], geos["rthird"] }
 up = { geos["thalf"], geos["tlarge"], geos["tthird"] }
@@ -164,23 +171,6 @@ table.indexOf = function (t, obj)
   end
 end
 
-local function getTerminals()
-  local terms = hs.application.get("Terminal"):allWindows()
-  table.sort(terms, function(a, b)
-    return a:screen():name():upper() > b:screen():name():upper()
-  end)
-  return terms
-end
-
-local function layout_app(wins, layout)
-  for i, win in ipairs(wins) do
-    local layout_index = i
-    if layout_index > #layout then layout_index = #layout end
-    win:moveToScreen(layout[layout_index][2])
-    win:move(layout[layout_index][1])
-  end
-end
-
 local function next_position(t, urect)
   local next_index = 1
   local cur_index = table.indexOf(t, hs.geometry.unitrect(urect))
@@ -196,6 +186,23 @@ end
 local function chain(t, win)
   local win = win or hs.window.focusedWindow()
   win:move(next_position(t, current_window_rect(win)))
+end
+
+local function getTerminals()
+  local terms = hs.application.get("Terminal"):allWindows()
+  table.sort(terms, function(a, b)
+    return a:screen():name():upper() > b:screen():name():upper()
+  end)
+  return terms
+end
+
+local function layout_app(wins, layout)
+  for i, win in ipairs(wins) do
+    local layout_index = i
+    if layout_index > #layout then layout_index = #layout end
+    win:moveToScreen(layout[layout_index][2])
+    win:move(layout[layout_index][1])
+  end
 end
 
 local function adjust(dim, amt)
@@ -261,9 +268,6 @@ hs.hotkey.bind({"cmd", "alt"}, "h", function()
 end)
 hs.hotkey.bind({"cmd", "alt"}, "4", function()
   layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome4"])
-end)
-hs.hotkey.bind({"cmd", "alt"}, "6", function()
-  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome6"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "9", function()
   gridify(hs.window.focusedWindow():application():allWindows())
