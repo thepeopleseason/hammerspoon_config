@@ -95,6 +95,11 @@ layouts = {
     {geos["lhalf"], dellScreen},
     {geos["rhalf"], dellScreen},
   },
+  chrome3 = {
+    {geos["lthird"], dellScreen},
+    {geos["mthird"], dellScreen},
+    {geos["rthird"], dellScreen},
+  },
   chrome4 = {
     {geos["ltq"], dellScreen},
     {geos["rtq"], dellScreen},
@@ -200,6 +205,13 @@ local function adjust(dim, amt)
   win:setFrame(f)
 end
 
+local function gridify(app_table)
+  if     #app_table == 2 then layout_app(app_table, layouts["chrome2"])
+  elseif #app_table == 3 then layout_app(app_table, layouts["chrome3"])
+  elseif #app_table == 4 then layout_app(app_table, layouts["chrome4"])
+  elseif #app_table  > 5 then layout_app(app_table, layouts["chrome6"])
+  end
+end
 
 -- resize bindings
 hs.hotkey.bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
@@ -252,6 +264,9 @@ hs.hotkey.bind({"cmd", "alt"}, "4", function()
 end)
 hs.hotkey.bind({"cmd", "alt"}, "6", function()
   layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome6"])
+end)
+hs.hotkey.bind({"cmd", "alt"}, "9", function()
+  gridify(hs.window.focusedWindow():application():allWindows())
 end)
 
 -- utility bindings
