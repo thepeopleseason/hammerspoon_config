@@ -5,6 +5,10 @@ local laptopScreen = "Built-in Retina Display"
 local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 
+-- define audio devices
+local headphones = hs.audiodevice.findDeviceByName("External Headphones")
+local speakers = hs.audiodevice.findDeviceByName("MacBook Pro Speakers")
+
 -- general geometry definitions
 geos = {
   fs = hs.geometry.unitrect(0.0, 0.0, 1.0, 1.0),
@@ -136,19 +140,6 @@ full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
 
 term = { geos["term"], geos["termr"] }
 
-function dump(o)
-   if type(o) == 'table' then
-      local s = '{ '
-      for k,v in pairs(o) do
-         if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
-      end
-      return s .. '} '
-   else
-      return tostring(o)
-   end
-end
-
 local function round(x, places)
   local places = places or 0
   local x = x * 10^places
@@ -220,6 +211,13 @@ local function gridify(app_table)
   end
 end
 
+local function switch_audio(aud)
+  if aud:setDefaultOutputDevice() then
+    hs.alert.show(aud:name())
+  end
+end
+
+
 -- resize bindings
 hs.hotkey.bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
 hs.hotkey.bind({"ctrl", "alt"}, "right", function () adjust("w", 20) end)
@@ -278,5 +276,10 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "d", function()
   hs.eventtap.keyStrokes(os.date('%Y-%m-%d'))
 end)
 hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "h", function() switch_audio(headphones) end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "s", function() switch_audio(speakers) end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
+  hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
+end)
 hs.alert.show("Config loaded")
 
