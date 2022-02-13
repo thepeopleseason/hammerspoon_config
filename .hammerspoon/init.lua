@@ -213,7 +213,7 @@ end
 
 local function switch_audio(aud)
   if aud:setDefaultOutputDevice() then
-    hs.alert.show(aud:name())
+    hs.alert.show("🔈" .. aud:name())
   end
 end
 
