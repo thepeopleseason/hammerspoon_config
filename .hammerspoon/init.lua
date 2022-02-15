@@ -62,8 +62,12 @@ layouts = {
   home3 = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
     {"Spotify", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Safari", nil, laptopScreen, geos["fs"], nil, nil},
     {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
+    {"Google Chrome",
+     hs.window.find("Rocket Science Group %- Calendar .* James %(James MC %(Profile 1%)%)"),
+     laptopScreen, geos["rthird"], nil, nil},
+    {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
+     laptopScreen, geos["llarge"], nil, nil},
   },
   v2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
@@ -73,13 +77,11 @@ layouts = {
   },
   pcm2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
     {"Google Chrome", nil, dellScreen, geos["llarge"], nil, nil},
     {"Terminal", nil, dellScreen, geos["rthird"], nil, nil},
   },
   code2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
     {"Google Chrome", nil, dellScreen, geos["rlarge"], nil, nil},
     {"Terminal", nil, dellScreen, geos["lthird"], nil, nil},
   },
@@ -94,8 +96,8 @@ layouts = {
     {geos["rhalf"], dellScreen},
   },
   home3_term = {
-    {geos["tthird"], vScreen},
     {geos["term"], dellScreen},
+    {geos["termr"], dellScreen},
   },
   filemgmt_finder = {
     {geos["ltq"], dellScreen},
@@ -179,14 +181,6 @@ local function chain(t, win)
   win:move(next_position(t, current_window_rect(win)))
 end
 
-local function getTerminals()
-  local terms = hs.application.get("Terminal"):allWindows()
-  table.sort(terms, function(a, b)
-    return a:screen():name():upper() > b:screen():name():upper()
-  end)
-  return terms
-end
-
 local function layout_app(wins, layout)
   for i, win in ipairs(wins) do
     local layout_index = i
@@ -257,9 +251,11 @@ end)
 hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "3", function()
-  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["home3_chrome"])
-  layout_app(getTerminals(), layouts["home3_term"])
   hs.layout.apply(layouts["home3"])
+  layout_app(hs.window.filter.new("Terminal"):setScreens(dellScreen):getWindows(),
+             layouts["home3_term"])
+  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+             layouts["home3_chrome"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "h", function()
   layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome2"])
@@ -281,5 +277,7 @@ hs.hotkey.bind({"ctrl", "alt", "cmd"}, "s", function() switch_audio(speakers) en
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
   hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
 end)
+
+hs.ipc.cliStatus()
 hs.alert.show("Config loaded")
 
