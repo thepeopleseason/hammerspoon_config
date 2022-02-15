@@ -278,6 +278,6 @@ hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
   hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
 end)
 
-hs.ipc.cliStatus()
+hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert.show("Config loaded")
 
