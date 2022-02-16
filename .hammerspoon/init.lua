@@ -57,21 +57,18 @@ layouts = {
   },
   zoombrowse = {
     {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
-    {"Google Chrome", nil, dellScreen, geos["rlarge"], nil, nil},
   },
   home3 = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
-    {"Spotify", nil, laptopScreen, geos["fs"], nil, nil},
     {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
     {"Google Chrome",
      hs.window.find("Rocket Science Group %- Calendar .* James %(James MC %(Profile 1%)%)"),
-     laptopScreen, geos["rthird"], nil, nil},
+     vScreen, geos["tthird"], nil, nil},
     {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
-     laptopScreen, geos["llarge"], nil, nil},
+     laptopScreen, geos["fs"], nil, nil},
   },
   v2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Safari", nil, laptopScreen, geos["thalf"], nil, nil},
     {"Google Chrome", nil, vScreen, geos["blarge"], nil, nil},
     {"Terminal", nil, vScreen, geos["tthird"], nil, nil},
   },
@@ -125,6 +122,10 @@ layouts = {
     {geos["lbthird"], dellScreen},
     {geos["mbthird"], dellScreen},
     {geos["rbthird"], dellScreen},
+  },
+  zoom_chrome = {
+    {geos["mthird"], dellScreen},
+    {geos["rthird"], dellScreen},
   },
 }
 
@@ -201,7 +202,7 @@ local function gridify(app_table)
   if     #app_table == 2 then layout_app(app_table, layouts["chrome2"])
   elseif #app_table == 3 then layout_app(app_table, layouts["chrome3"])
   elseif #app_table == 4 then layout_app(app_table, layouts["chrome4"])
-  elseif #app_table  > 5 then layout_app(app_table, layouts["chrome6"])
+  elseif #app_table >= 5 then layout_app(app_table, layouts["chrome6"])
   end
 end
 
@@ -242,7 +243,11 @@ hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
 
 -- layout bindings
 hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
-hs.hotkey.bind({"cmd", "alt"}, "q", function() hs.layout.apply(layouts["zoombrowse"]) end)
+hs.hotkey.bind({"cmd", "alt"}, "q", function()
+  hs.layout.apply(layouts["zoombrowse"])
+  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+             layouts["zoom_chrome"])
+end)
 hs.hotkey.bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "m", function()
   hs.layout.apply(layouts["filemgmt"])
@@ -258,12 +263,17 @@ hs.hotkey.bind({"cmd", "alt"}, "3", function()
              layouts["home3_chrome"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "h", function()
-  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome2"])
+  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+             layouts["chrome2"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "4", function()
-  layout_app(hs.application.get("Google Chrome"):allWindows(), layouts["chrome4"])
+  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+             layouts["chrome4"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "9", function()
+  gridify(hs.window.filter.new():setScreens(dellScreen):getWindows())
+end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "9", function()
   gridify(hs.window.focusedWindow():application():allWindows())
 end)
 
