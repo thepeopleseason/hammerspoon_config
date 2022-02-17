@@ -244,9 +244,12 @@ hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
 -- layout bindings
 hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
 hs.hotkey.bind({"cmd", "alt"}, "q", function()
+  wf = hs.window.filter.new()
+  wins = wf:setCurrentSpace(true):setScreens(dellScreen):rejectApp("zoom.us"):getWindows()
+  if     #wins == 1 then layout_app(wins, {{geos["rlarge"], dellScreen}})
+  elseif #wins  > 1 then layout_app(wins, layouts["zoom_chrome"])
+  end
   hs.layout.apply(layouts["zoombrowse"])
-  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
-             layouts["zoom_chrome"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "m", function()
