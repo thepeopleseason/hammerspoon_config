@@ -19,7 +19,7 @@ geos = {
 
   tlarge = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.66),
   thalf = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.5),
-  blarge = hs.geometry.unitrect(0.0, 0.33, 1.0, 0.66),
+  blarge = hs.geometry.unitrect(0.0, 0.34, 1.0, 0.67),
   bhalf = hs.geometry.unitrect(0.0, 0.5, 1.0, 0.5),
 
   ltq = hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),
@@ -260,17 +260,17 @@ hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]
 hs.hotkey.bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "3", function()
   hs.layout.apply(layouts["home3"])
-  layout_app(hs.window.filter.new("Terminal"):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Terminal"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
              layouts["home3_term"])
-  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
              layouts["home3_chrome"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "h", function()
-  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
              layouts["chrome2"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "4", function()
-  layout_app(hs.window.filter.new("Google Chrome"):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
              layouts["chrome4"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "9", function()
