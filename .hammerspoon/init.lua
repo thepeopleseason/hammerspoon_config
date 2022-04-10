@@ -4,6 +4,17 @@ hs.window.animationDuration = 0
 local laptopScreen = "Built-in Retina Display"
 local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
+local miamiScreen = "HP S2031"
+
+local function secondScreen()
+  if hs.screen("HP S2031") then
+    return hs.screen("HP S2031")
+  elseif hs.screen("DELL U3419W") then
+    return hs.screen("DELL U3419W")
+  else
+    return nil
+  end
+end
 
 -- define audio devices
 local headphones = hs.audiodevice.findDeviceByName("External Headphones")
@@ -73,9 +84,9 @@ layouts = {
     {"Terminal", nil, vScreen, geos["tthird"], nil, nil},
   },
   pcm2 = {
-    {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Google Chrome", nil, dellScreen, geos["llarge"], nil, nil},
-    {"Terminal", nil, dellScreen, geos["rthird"], nil, nil},
+    {"Slack", nil, laptopScreen, geos["lhalf"], nil, nil},
+    {"Google Chrome", nil, secondScreen(), geos["llarge"], nil, nil},
+    {"Terminal", nil, secondScreen(), geos["rthird"], nil, nil},
   },
   code2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
