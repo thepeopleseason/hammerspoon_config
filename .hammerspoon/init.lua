@@ -6,11 +6,11 @@ local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 local miamiScreen = "HP S2031"
 
-local function secondScreen()
-  if hs.screen("HP S2031") then
-    return hs.screen("HP S2031")
-  elseif hs.screen("DELL U3419W") then
-    return hs.screen("DELL U3419W")
+local function primaryScreen()
+  if hs.screen(miamiScreen) then
+    return hs.screen(miamiScreen)
+  elseif hs.screen(dellScreen) then
+    return hs.screen(dellScreen)
   else
     return nil
   end
@@ -67,11 +67,11 @@ layouts = {
     {"Terminal", nil, laptopScreen, geos["term"], nil, nil},
   },
   zoombrowse = {
-    {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
+    {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
   },
   home3 = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
-    {"zoom.us", nil, dellScreen, geos["lthird"], nil, nil},
+    {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
     {"Google Chrome",
      hs.window.find("Rocket Science Group %- Calendar .* James %(James MC %(Profile 1%)%)"),
      vScreen, geos["tthird"], nil, nil},
@@ -85,58 +85,58 @@ layouts = {
   },
   pcm2 = {
     {"Slack", nil, laptopScreen, geos["lhalf"], nil, nil},
-    {"Google Chrome", nil, secondScreen(), geos["llarge"], nil, nil},
-    {"Terminal", nil, secondScreen(), geos["rthird"], nil, nil},
+    {"Google Chrome", nil, primaryScreen(), geos["llarge"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["rthird"], nil, nil},
   },
   code2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Google Chrome", nil, dellScreen, geos["rlarge"], nil, nil},
-    {"Terminal", nil, dellScreen, geos["lthird"], nil, nil},
+    {"Google Chrome", nil, primaryScreen(), geos["rlarge"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["lthird"], nil, nil},
   },
   filemgmt = {
-    {"Google Chrome", nil, dellScreen, geos["rhalf"], nil, nil},
-    {"Terminal", nil, dellScreen, geos["rhalf"], nil, nil},
+    {"Google Chrome", nil, primaryScreen(), geos["rhalf"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["rhalf"], nil, nil},
   },
 
   -- layout_app() layouts
   home3_chrome = {
-    {geos["lhalf"], dellScreen},
-    {geos["rhalf"], dellScreen},
+    {geos["lhalf"], primaryScreen()},
+    {geos["rhalf"], primaryScreen()},
   },
   home3_term = {
-    {geos["term"], dellScreen},
-    {geos["termr"], dellScreen},
+    {geos["term"], primaryScreen()},
+    {geos["termr"], primaryScreen()},
   },
   filemgmt_finder = {
-    {geos["ltq"], dellScreen},
-    {geos["lbq"], dellScreen},
+    {geos["ltq"], primaryScreen()},
+    {geos["lbq"], primaryScreen()},
   },
   chrome2 = {
-    {geos["lhalf"], dellScreen},
-    {geos["rhalf"], dellScreen},
+    {geos["lhalf"], primaryScreen()},
+    {geos["rhalf"], primaryScreen()},
   },
   chrome3 = {
-    {geos["lthird"], dellScreen},
-    {geos["mthird"], dellScreen},
-    {geos["rthird"], dellScreen},
+    {geos["lthird"], primaryScreen()},
+    {geos["mthird"], primaryScreen()},
+    {geos["rthird"], primaryScreen()},
   },
   chrome4 = {
-    {geos["ltq"], dellScreen},
-    {geos["rtq"], dellScreen},
-    {geos["lbq"], dellScreen},
-    {geos["rbq"], dellScreen},
+    {geos["ltq"], primaryScreen()},
+    {geos["rtq"], primaryScreen()},
+    {geos["lbq"], primaryScreen()},
+    {geos["rbq"], primaryScreen()},
   },
   chrome6 = {
-    {geos["ltthird"], dellScreen},
-    {geos["mtthird"], dellScreen},
-    {geos["rtthird"], dellScreen},
-    {geos["lbthird"], dellScreen},
-    {geos["mbthird"], dellScreen},
-    {geos["rbthird"], dellScreen},
+    {geos["ltthird"], primaryScreen()},
+    {geos["mtthird"], primaryScreen()},
+    {geos["rtthird"], primaryScreen()},
+    {geos["lbthird"], primaryScreen()},
+    {geos["mbthird"], primaryScreen()},
+    {geos["rbthird"], primaryScreen()},
   },
   zoom_chrome = {
-    {geos["mthird"], dellScreen},
-    {geos["rthird"], dellScreen},
+    {geos["mthird"], primaryScreen()},
+    {geos["rthird"], primaryScreen()},
   },
 }
 
@@ -257,7 +257,7 @@ hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximiz
 hs.hotkey.bind({"cmd", "alt"}, "q", function()
   wf = hs.window.filter.new()
   wins = wf:setCurrentSpace(true):setScreens(dellScreen):rejectApp("zoom.us"):getWindows()
-  if     #wins == 1 then layout_app(wins, {{geos["rlarge"], dellScreen}})
+  if     #wins == 1 then layout_app(wins, {{geos["rlarge"], primaryScreen()}})
   elseif #wins  > 1 then layout_app(wins, layouts["zoom_chrome"])
   end
   hs.layout.apply(layouts["zoombrowse"])
