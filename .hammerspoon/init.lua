@@ -73,7 +73,7 @@ layouts = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
     {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
     {"Google Chrome",
-     hs.window.find("Rocket Science Group %- Calendar .* James %(James MC %(Profile 1%)%)"),
+     hs.window.find("MCCal .* James %(James MC %(Profile 1%)%)"),
      vScreen, geos["tthird"], nil, nil},
     {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
      laptopScreen, geos["fs"], nil, nil},
@@ -298,6 +298,9 @@ end)
 hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "h", function() switch_audio(headphones) end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "s", function() switch_audio(speakers) end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "i", function()
+  hs.execute("/usr/local/bin/ddcctl -d 2 -i 17")
+end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
   hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
 end)
