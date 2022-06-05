@@ -16,10 +16,6 @@ local function primaryScreen()
   end
 end
 
--- define audio devices
-local headphones = hs.audiodevice.findDeviceByName("External Headphones")
-local speakers = hs.audiodevice.findDeviceByName("MacBook Pro Speakers")
-
 -- general geometry definitions
 geos = {
   fs = hs.geometry.unitrect(0.0, 0.0, 1.0, 1.0),
@@ -296,10 +292,17 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "d", function()
   hs.eventtap.keyStrokes(os.date('%Y-%m-%d'))
 end)
 hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "h", function() switch_audio(headphones) end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "s", function() switch_audio(speakers) end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "h", function()
+  switch_audio(hs.audiodevice.findDeviceByName("External Headphones"))
+end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "s", function()
+  switch_audio(hs.audiodevice.findDeviceByName("MacBook Pro Speakers"))
+end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "m", function()
+  switch_audio(hs.audiodevice.findDeviceByName("DELL U3419W"))
+end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "i", function()
-  hs.execute("/Users/jhsiao/devel/m1ddc/m1ddc display 1 set input 17")
+  hs.execute("/usr/local/bin/m1ddc display `/usr/local/bin/m1ddc display list | grep DELL | cut -c 1` set input 17")
 end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
   hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
