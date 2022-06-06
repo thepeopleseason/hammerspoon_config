@@ -219,6 +219,23 @@ local function switch_audio(aud)
   end
 end
 
+local function switch_monitor_input()
+  local current_input = "27" -- USB-C
+  local new_input = "17"     -- HDMI 1
+
+  hs.task.new("/usr/local/bin/m1ddc",
+              function(code,output,err) current_input = output end,
+              { "display", "2", "get", "input" }
+  ):start():waitUntilExit()
+
+  local index = current_input:find("27")
+  if index and index > 0 then
+    new_input = "17"
+  else
+    new_input = "27"
+  end
+  hs.execute("/usr/local/bin/m1ddc display `/usr/local/bin/m1ddc display list | grep DELL | cut -c 1` set input " .. new_input)
+end
 
 -- resize bindings
 hs.hotkey.bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
@@ -301,9 +318,7 @@ end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "m", function()
   switch_audio(hs.audiodevice.findDeviceByName("DELL U3419W"))
 end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "i", function()
-  hs.execute("/usr/local/bin/m1ddc display `/usr/local/bin/m1ddc display list | grep DELL | cut -c 1` set input 17")
-end)
+hs.hotkey.bind({"ctrl", "alt", "cmd"}, "i", function() switch_monitor_input() end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
   hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
 end)
