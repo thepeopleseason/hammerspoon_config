@@ -1,4 +1,8 @@
+
 hs.window.animationDuration = 0
+
+hs.loadSpoon("Caffeine")
+spoon.Caffeine:start()
 
 -- define screens
 local laptopScreen = "Built-in Retina Display"
@@ -6,11 +10,14 @@ local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 local miamiScreen = "HP S2031"
 
+-- keep current monitor input state
+local current_monitor_input = "27"
+
 local function primaryScreen()
-  if hs.screen(miamiScreen) then
-    return hs.screen(miamiScreen)
-  elseif hs.screen(dellScreen) then
+  if hs.screen(dellScreen) then
     return hs.screen(dellScreen)
+  elseif hs.screen(miamiScreen) then
+    return hs.screen(miamiScreen)
   else
     return nil
   end
@@ -150,6 +157,19 @@ full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
 
 term = { geos["term"], geos["termr"] }
 
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
 local function round(x, places)
   local places = places or 0
   local x = x * 10^places
@@ -220,21 +240,15 @@ local function switch_audio(aud)
 end
 
 local function switch_monitor_input()
-  local current_input = "27" -- USB-C
-  local new_input = "17"     -- HDMI 1
-
-  hs.task.new("/usr/local/bin/m1ddc",
-              function(code,output,err) current_input = output end,
-              { "display", "2", "get", "input" }
-  ):start():waitUntilExit()
-
-  local index = current_input:find("27")
-  if index and index > 0 then
+  if current_monitor_input == "27" then
     new_input = "17"
+    spoon.Caffeine:setState(true)
   else
     new_input = "27"
+    spoon.Caffeine:setState(false)
   end
   hs.execute("/usr/local/bin/m1ddc display `/usr/local/bin/m1ddc display list | grep DELL | cut -c 1` set input " .. new_input)
+  current_monitor_input = new_input
 end
 
 -- resize bindings
@@ -269,7 +283,7 @@ hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
 hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
 hs.hotkey.bind({"cmd", "alt"}, "q", function()
   wf = hs.window.filter.new()
-  wins = wf:setCurrentSpace(true):setScreens(dellScreen):rejectApp("zoom.us"):getWindows()
+  wins = wf:setCurrentSpace(true):setScreens(primaryScreen():name()):rejectApp("zoom.us"):getWindows()
   if     #wins == 1 then layout_app(wins, {{geos["rlarge"], primaryScreen()}})
   elseif #wins  > 1 then layout_app(wins, layouts["zoom_chrome"])
   end
@@ -284,21 +298,21 @@ hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]
 hs.hotkey.bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "3", function()
   hs.layout.apply(layouts["home3"])
-  layout_app(hs.window.filter.new("Terminal"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Terminal"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
              layouts["home3_term"])
-  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
              layouts["home3_chrome"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "h", function()
-  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
              layouts["chrome2"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "4", function()
-  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(dellScreen):getWindows(),
+  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
              layouts["chrome4"])
 end)
 hs.hotkey.bind({"cmd", "alt"}, "9", function()
-  gridify(hs.window.filter.new():setScreens(dellScreen):getWindows())
+  gridify(hs.window.filter.new():setScreens(primaryScreen():name()):getWindows())
 end)
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "9", function()
   gridify(hs.window.focusedWindow():application():allWindows())
