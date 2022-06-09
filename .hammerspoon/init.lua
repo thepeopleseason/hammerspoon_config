@@ -3,25 +3,12 @@ hs.window.animationDuration = 0
 hs.loadSpoon("Caffeine")
 spoon.Caffeine:start()
 
--- define screens
+-- define constants
+-- screens
 local laptopScreen = "Built-in Retina Display"
 local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 local miamiScreen = "HP S2031"
-
--- get current id for dell, if available
-local dell_id = nil
-if hs.screen(dellScreen) then
-  hs.task.new(
-    "/Users/jhsiao/devel/dotfiles/bin/dell_id",
-    function(exitCode, output, err)
-      dell_id = string.gsub(output, "%s", "")
-    end
-  ):start():waitUntilExit()
-end
-
--- define keys
-local hyper = {"ctrl", "alt", "cmd"}
 
 local function primaryScreen()
   if hs.screen(dellScreen) then
@@ -33,9 +20,11 @@ local function primaryScreen()
   end
 end
 
-local dwf = hs.window.filter
-dwf.default:setDefaultFilter({ currentSpace=true, allowScreens=primaryScreen():name() })
-foo = dwf
+-- keys
+local hyper = {"ctrl", "alt", "cmd"}
+
+-- applications
+local browsers = {"Google Chrome", "Firefox"}
 
 -- general geometry definitions
 geos = {
@@ -81,6 +70,7 @@ layouts = {
   laptop = {
     {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
     {"Google Chrome", nil, laptopScreen, geos["fs"], nil, nil},
+    {"Firefox", nil, laptopScreen, geos["fs"], nil, nil},
     {"Terminal", nil, laptopScreen, geos["term"], nil, nil},
   },
   zoombrowse = {
@@ -89,29 +79,33 @@ layouts = {
   home3 = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
     {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
-    {"Google Chrome",
-     hs.window.find("MCCal .* James %(James MC %(Profile 1%)%)"),
-     vScreen, geos["tthird"], nil, nil},
-    {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
-     vScreen, geos["tthird"], nil, nil},
+--    {"Google Chrome",
+--     hs.window.find("MCCal .* James %(James MC %(Profile 1%)%)"),
+--     vScreen, geos["tthird"], nil, nil},
+--    {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
+--     vScreen, geos["tthird"], nil, nil},
   },
   v2 = {
-    {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Google Chrome", nil, vScreen, geos["blarge"], nil, nil},
-    {"Terminal", nil, vScreen, geos["tthird"], nil, nil},
+    {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
+    {"Google Chrome", nil, primaryScreen(), geos["blarge"], nil, nil},
+    {"Firefox", nil, primaryScreen(), geos["blarge"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["tthird"], nil, nil},
   },
   pcm2 = {
     {"Slack", nil, laptopScreen, geos["lhalf"], nil, nil},
     {"Google Chrome", nil, primaryScreen(), geos["llarge"], nil, nil},
+    {"Firefox", nil, primaryScreen(), geos["llarge"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["rthird"], nil, nil},
   },
   code2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
     {"Google Chrome", nil, primaryScreen(), geos["rlarge"], nil, nil},
+    {"Firefox", nil, primaryScreen(), geos["rlarge"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["lthird"], nil, nil},
   },
   filemgmt = {
     {"Google Chrome", nil, primaryScreen(), geos["rhalf"], nil, nil},
+    {"Firefox", nil, primaryScreen(), geos["rhalf"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["rhalf"], nil, nil},
   },
 
@@ -123,6 +117,9 @@ layouts = {
   home3_term = {
     {geos["term"], primaryScreen()},
     {geos["termr"], primaryScreen()},
+  },
+  home3_voicecal = {
+    {geos["tthird"], vScreen},
   },
   filemgmt_finder = {
     {geos["ltq"], primaryScreen()},
@@ -170,6 +167,28 @@ full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
               geos["lbthird"], geos["mbthird"], geos["rbthird"] }
 
 term = { geos["term"], geos["termr"] }
+
+-- get current id for dell, if available
+local dell_id = nil
+if hs.screen(dellScreen) then
+  hs.task.new(
+    "/Users/jhsiao/devel/dotfiles/bin/dell_id",
+    function(exitCode, output, err)
+      dell_id = string.gsub(output, "%s", "")
+    end
+  ):start():waitUntilExit()
+end
+
+function get_wf(app)
+  local wf=hs.window.filter
+  local filter = { currentSpace=true, rejectTitles={"Voice", "MCCal"}, visible=true }
+
+  if app then
+    return wf.new(app):setOverrideFilter(filter)
+  else
+    return wf.new(false):setDefaultFilter(filter)
+  end
+end
 
 local function round(x, places)
   local places = places or 0
@@ -264,76 +283,73 @@ local function switch_monitor_input()
   hs.execute("/usr/local/bin/m1ddc display " .. dell_id .. " set input " .. new_input)
 end
 
+local bind = hs.hotkey.bind
+
 -- resize bindings
-hs.hotkey.bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
-hs.hotkey.bind({"ctrl", "alt"}, "right", function () adjust("w", 20) end)
-hs.hotkey.bind({"ctrl", "alt"}, "up", function () adjust("h", -20) end)
-hs.hotkey.bind({"ctrl", "alt"}, "down", function () adjust("h", 20) end)
+bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
+bind({"ctrl", "alt"}, "right", function () adjust("w", 20) end)
+bind({"ctrl", "alt"}, "up", function () adjust("h", -20) end)
+bind({"ctrl", "alt"}, "down", function () adjust("h", 20) end)
+bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
 
 -- nudge bindings
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "left", function () adjust("x", -50) end)
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "right", function () adjust("x", 50) end)
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "up", function () adjust("y", -50) end)
-hs.hotkey.bind({"ctrl", "alt", "shift"}, "down", function () adjust("y", 50) end)
+bind({"ctrl", "alt", "shift"}, "left", function () adjust("x", -50) end)
+bind({"ctrl", "alt", "shift"}, "right", function () adjust("x", 50) end)
+bind({"ctrl", "alt", "shift"}, "up", function () adjust("y", -50) end)
+bind({"ctrl", "alt", "shift"}, "down", function () adjust("y", 50) end)
 
 -- throw bindings
-hs.hotkey.bind(
-  hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(true, true) end)
-hs.hotkey.bind(
-  hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(true, true) end)
+bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest() end)
+bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast() end)
 
 -- chain bindings
-hs.hotkey.bind({"cmd", "alt"}, "Left", function() chain(left) end)
-hs.hotkey.bind({"cmd", "alt"}, "Right", function() chain(right) end)
-hs.hotkey.bind({"cmd", "alt"}, "Up", function () chain(up) end)
-hs.hotkey.bind({"cmd", "alt"}, "Down", function() chain(down) end)
-hs.hotkey.bind({"ctrl", "shift"}, "Right", function() chain(full_grid) end)
-hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
+bind({"cmd", "alt"}, "Left", function() chain(left) end)
+bind({"cmd", "alt"}, "Right", function() chain(right) end)
+bind({"cmd", "alt"}, "Up", function () chain(up) end)
+bind({"cmd", "alt"}, "Down", function() chain(down) end)
+bind({"ctrl", "shift"}, "Right", function() chain(full_grid) end)
+bind({"cmd", "alt"}, "t", function() chain(term) end)
 
 -- layout bindings
-hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
-hs.hotkey.bind({"cmd", "alt"}, "q", function()
-  wins = dwf.new():setScreens(primaryScreen():name()):rejectApp("zoom.us"):getWindows()
+bind({"cmd", "alt"}, "q", function()
+  wins = get_wf():rejectApp("zoom.us"):getWindows()
   if     #wins == 1 then layout_app(wins, {{geos["rlarge"], primaryScreen()}})
   elseif #wins  > 1 then layout_app(wins, layouts["zoom_chrome"])
   end
   hs.layout.apply(layouts["zoombrowse"])
 end)
-hs.hotkey.bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
-hs.hotkey.bind({"cmd", "alt"}, "m", function()
+bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
+bind({"cmd", "alt"}, "m", function()
   hs.layout.apply(layouts["filemgmt"])
-  layout_app(hs.application.get("Finder"):allWindows(), layouts["filemgmt_finder"])
+  layout_app(get_wf("Finder"):getWindows(), layouts["filemgmt_finder"])
 end)
-hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
-hs.hotkey.bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
+bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
+bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 
-hs.hotkey.bind({"cmd", "alt"}, "3",
-               function()
-                 hs.layout.apply(layouts["home3"])
-                 layout_app(dwf.new("Terminal"):setScreens(primaryScreen():name()):getWindows(), layouts["home3_term"])
-                 layout_app(dwf.new("Google Chrome"):setScreens(primaryScreen():name()):getWindows(), layouts["home3_chrome"])
-               end)
+bind({"cmd", "alt"}, "3",
+     function() hs.layout.apply(layouts["home3"])
+       layout_app(get_wf("Terminal"):getWindows(), layouts["home3_term"])
+       layout_app(get_wf(browsers):getWindows(), layouts["home3_chrome"])
+       layout_app(
+         hs.window.filter.new(browsers):setOverrideFilter({allowTitles={"Voice", "MCCal"}}):getWindows(),
+         {{ geos["tthird"], vScreen }})
+     end)
 
-hs.hotkey.bind({"cmd", "alt"}, "h",
-               function()
-                 layout_app(dwf.new("Google Chrome"):setScreens(primaryScreen():name()):getWindows(), layouts["chrome2"])
-               end)
-hs.hotkey.bind({"cmd", "alt"}, "4",
-               function()
-                 layout_app(dwf.new("Google Chrome"):setScreens(primaryScreen():name()):getWindows(), layouts["chrome4"])
-               end)
-hs.hotkey.bind({"cmd", "alt"}, "9", function() gridify(dwf.new():setScreens(primaryScreen():name()):getWindows()) end)
-hs.hotkey.bind(hyper, "9",
-               function() gridify(hs.window.focusedWindow():application():allWindows()) end)
+bind({"cmd", "alt"}, "h",
+     function() layout_app(get_wf(browsers):getWindows(), layouts["chrome2"]) end)
+bind({"cmd", "alt"}, "4",
+     function() layout_app(get_wf(browsers):getWindows(), layouts["chrome4"]) end)
+bind({"cmd", "alt"}, "9", function() gridify(get_wf():getWindows()) end)
+bind(hyper, "9", function() gridify(hs.window.focusedWindow():application():allWindows()) end)
 
 -- utility bindings
-hs.hotkey.bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-hs.hotkey.bind(hyper, "h", function() switch_audio("External Headphones") end)
-hs.hotkey.bind(hyper, "s", function() switch_audio("MacBook Pro Speakers") end)
-hs.hotkey.bind(hyper, "m", function() switch_audio("DELL U3419W") end)
-hs.hotkey.bind(hyper, "i", function() if dell_id then switch_monitor_input() end end)
-hs.hotkey.bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
-hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
+bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
+bind(hyper, "h", function() switch_audio("External Headphones") end)
+bind(hyper, "s", function() switch_audio("MacBook Pro Speakers") end)
+bind(hyper, "m", function() switch_audio("DELL U3419W") end)
+bind(hyper, "i", function() if dell_id then switch_monitor_input() end end)
+bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
+bind({"cmd", "alt"}, "0", function() hs.reload() end)
 
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert.show("Config loaded")
