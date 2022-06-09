@@ -9,13 +9,19 @@ local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 local miamiScreen = "HP S2031"
 
-local dell_id
-hs.task.new(
-  "/Users/jhsiao/devel/dotfiles/bin/dell_id",
-  function(exitCode, output, err)
-    dell_id = string.gsub(output, "%s", "")
-  end
-):start():waitUntilExit()
+-- get current id for dell, if available
+local dell_id = nil
+if hs.screen(dellScreen) then
+  hs.task.new(
+    "/Users/jhsiao/devel/dotfiles/bin/dell_id",
+    function(exitCode, output, err)
+      dell_id = string.gsub(output, "%s", "")
+    end
+  ):start():waitUntilExit()
+end
+
+-- define keys
+local hyper = {"ctrl", "alt", "cmd"}
 
 local function primaryScreen()
   if hs.screen(dellScreen) then
@@ -26,6 +32,10 @@ local function primaryScreen()
     return nil
   end
 end
+
+local dwf = hs.window.filter
+dwf.default:setDefaultFilter({ currentSpace=true, allowScreens=primaryScreen():name() })
+foo = dwf
 
 -- general geometry definitions
 geos = {
@@ -83,7 +93,7 @@ layouts = {
      hs.window.find("MCCal .* James %(James MC %(Profile 1%)%)"),
      vScreen, geos["tthird"], nil, nil},
     {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
-     laptopScreen, geos["fs"], nil, nil},
+     vScreen, geos["tthird"], nil, nil},
   },
   v2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
@@ -161,19 +171,6 @@ full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
 
 term = { geos["term"], geos["termr"] }
 
-function dump(o)
-   if type(o) == 'table' then
-      local s = '{ '
-      for k,v in pairs(o) do
-         if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
-      end
-      return s .. '} '
-   else
-      return tostring(o)
-   end
-end
-
 local function round(x, places)
   local places = places or 0
   local x = x * 10^places
@@ -238,8 +235,9 @@ local function gridify(app_table)
 end
 
 local function switch_audio(aud)
-  if aud:setDefaultOutputDevice() then
-    hs.alert.show("🔈" .. aud:name())
+  local device = hs.audiodevice.findDeviceByName(aud)
+  if device:setDefaultOutputDevice() then
+    hs.alert.show("🔈" .. device:name())
   end
 end
 
@@ -255,13 +253,15 @@ local function switch_monitor_input()
   ):start():waitUntilExit()
 
   if current_monitor_input == "27" then
+    -- HDMI 1
     new_input = "17"
     spoon.Caffeine:setState(true)
   else
+    -- USB-C
     new_input = "27"
     spoon.Caffeine:setState(false)
   end
-  hs.execute("/usr/local/bin/m1ddc display `/usr/local/bin/m1ddc display list | grep DELL | cut -c 1` set input " .. new_input)
+  hs.execute("/usr/local/bin/m1ddc display " .. dell_id .. " set input " .. new_input)
 end
 
 -- resize bindings
@@ -277,12 +277,10 @@ hs.hotkey.bind({"ctrl", "alt", "shift"}, "up", function () adjust("y", -50) end)
 hs.hotkey.bind({"ctrl", "alt", "shift"}, "down", function () adjust("y", 50) end)
 
 -- throw bindings
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "left", function()
-  hs.window.focusedWindow():moveOneScreenWest(true, true)
-end)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "right", function()
-  hs.window.focusedWindow():moveOneScreenEast(true, true)
-end)
+hs.hotkey.bind(
+  hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(true, true) end)
+hs.hotkey.bind(
+  hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(true, true) end)
 
 -- chain bindings
 hs.hotkey.bind({"cmd", "alt"}, "Left", function() chain(left) end)
@@ -295,8 +293,7 @@ hs.hotkey.bind({"cmd", "alt"}, "t", function() chain(term) end)
 -- layout bindings
 hs.hotkey.bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
 hs.hotkey.bind({"cmd", "alt"}, "q", function()
-  wf = hs.window.filter.new()
-  wins = wf:setCurrentSpace(true):setScreens(primaryScreen():name()):rejectApp("zoom.us"):getWindows()
+  wins = dwf.new():setScreens(primaryScreen():name()):rejectApp("zoom.us"):getWindows()
   if     #wins == 1 then layout_app(wins, {{geos["rlarge"], primaryScreen()}})
   elseif #wins  > 1 then layout_app(wins, layouts["zoom_chrome"])
   end
@@ -309,46 +306,34 @@ hs.hotkey.bind({"cmd", "alt"}, "m", function()
 end)
 hs.hotkey.bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
 hs.hotkey.bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
-hs.hotkey.bind({"cmd", "alt"}, "3", function()
-  hs.layout.apply(layouts["home3"])
-  layout_app(hs.window.filter.new("Terminal"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
-             layouts["home3_term"])
-  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
-             layouts["home3_chrome"])
-end)
-hs.hotkey.bind({"cmd", "alt"}, "h", function()
-  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
-             layouts["chrome2"])
-end)
-hs.hotkey.bind({"cmd", "alt"}, "4", function()
-  layout_app(hs.window.filter.new("Google Chrome"):setCurrentSpace(true):setScreens(primaryScreen():name()):getWindows(),
-             layouts["chrome4"])
-end)
-hs.hotkey.bind({"cmd", "alt"}, "9", function()
-  gridify(hs.window.filter.new():setScreens(primaryScreen():name()):getWindows())
-end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "9", function()
-  gridify(hs.window.focusedWindow():application():allWindows())
-end)
+
+hs.hotkey.bind({"cmd", "alt"}, "3",
+               function()
+                 hs.layout.apply(layouts["home3"])
+                 layout_app(dwf.new("Terminal"):setScreens(primaryScreen():name()):getWindows(), layouts["home3_term"])
+                 layout_app(dwf.new("Google Chrome"):setScreens(primaryScreen():name()):getWindows(), layouts["home3_chrome"])
+               end)
+
+hs.hotkey.bind({"cmd", "alt"}, "h",
+               function()
+                 layout_app(dwf.new("Google Chrome"):setScreens(primaryScreen():name()):getWindows(), layouts["chrome2"])
+               end)
+hs.hotkey.bind({"cmd", "alt"}, "4",
+               function()
+                 layout_app(dwf.new("Google Chrome"):setScreens(primaryScreen():name()):getWindows(), layouts["chrome4"])
+               end)
+hs.hotkey.bind({"cmd", "alt"}, "9", function() gridify(dwf.new():setScreens(primaryScreen():name()):getWindows()) end)
+hs.hotkey.bind(hyper, "9",
+               function() gridify(hs.window.focusedWindow():application():allWindows()) end)
 
 -- utility bindings
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "d", function()
-  hs.eventtap.keyStrokes(os.date('%Y-%m-%d'))
-end)
+hs.hotkey.bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
+hs.hotkey.bind(hyper, "h", function() switch_audio("External Headphones") end)
+hs.hotkey.bind(hyper, "s", function() switch_audio("MacBook Pro Speakers") end)
+hs.hotkey.bind(hyper, "m", function() switch_audio("DELL U3419W") end)
+hs.hotkey.bind(hyper, "i", function() if dell_id then switch_monitor_input() end end)
+hs.hotkey.bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
 hs.hotkey.bind({"cmd", "alt"}, "0", function() hs.reload() end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "h", function()
-  switch_audio(hs.audiodevice.findDeviceByName("External Headphones"))
-end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "s", function()
-  switch_audio(hs.audiodevice.findDeviceByName("MacBook Pro Speakers"))
-end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "m", function()
-  switch_audio(hs.audiodevice.findDeviceByName("DELL U3419W"))
-end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "i", function() switch_monitor_input() end)
-hs.hotkey.bind({"ctrl", "alt", "cmd"}, "p", function()
-  hs.application.launchOrFocusByBundleID("com.pingidentity.pingid.pcclient")
-end)
 
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert.show("Config loaded")
