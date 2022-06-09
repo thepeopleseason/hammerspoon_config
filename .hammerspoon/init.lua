@@ -1,4 +1,3 @@
-
 hs.window.animationDuration = 0
 
 hs.loadSpoon("Caffeine")
@@ -10,8 +9,13 @@ local vScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 local miamiScreen = "HP S2031"
 
--- keep current monitor input state
-local current_monitor_input = "27"
+local dell_id
+hs.task.new(
+  "/Users/jhsiao/devel/dotfiles/bin/dell_id",
+  function(exitCode, output, err)
+    dell_id = string.gsub(output, "%s", "")
+  end
+):start():waitUntilExit()
 
 local function primaryScreen()
   if hs.screen(dellScreen) then
@@ -240,6 +244,16 @@ local function switch_audio(aud)
 end
 
 local function switch_monitor_input()
+  local current_monitor_input = "27"
+  local new_input
+
+  hs.task.new(
+    "/Users/jhsiao/devel/dotfiles/bin/current_input",
+    function(exitCode, output, err)
+      current_monitor_input = string.gsub(output, "%s", "")
+    end
+  ):start():waitUntilExit()
+
   if current_monitor_input == "27" then
     new_input = "17"
     spoon.Caffeine:setState(true)
@@ -248,7 +262,6 @@ local function switch_monitor_input()
     spoon.Caffeine:setState(false)
   end
   hs.execute("/usr/local/bin/m1ddc display `/usr/local/bin/m1ddc display list | grep DELL | cut -c 1` set input " .. new_input)
-  current_monitor_input = new_input
 end
 
 -- resize bindings
