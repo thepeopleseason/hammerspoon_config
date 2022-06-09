@@ -22,6 +22,7 @@ end
 
 -- keys
 local hyper = {"ctrl", "alt", "cmd"}
+local bind = hs.hotkey.bind
 
 -- applications
 local browsers = {"Google Chrome", "Firefox"}
@@ -64,7 +65,7 @@ geos = {
   termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99),
 }
 
--- layouts for use with hs.layout.apply() and layout_app()
+-- layouts for use with hs.layout.apply(), layout_app(), and chain()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
@@ -79,94 +80,70 @@ layouts = {
   home3 = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
     {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
---    {"Google Chrome",
---     hs.window.find("MCCal .* James %(James MC %(Profile 1%)%)"),
---     vScreen, geos["tthird"], nil, nil},
---    {"Google Chrome", hs.window.find("Voice %- Google Chrome %- James %(Default%)"),
---     vScreen, geos["tthird"], nil, nil},
   },
   v2 = {
     {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Google Chrome", nil, primaryScreen(), geos["blarge"], nil, nil},
-    {"Firefox", nil, primaryScreen(), geos["blarge"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["tthird"], nil, nil},
   },
   pcm2 = {
-    {"Slack", nil, laptopScreen, geos["lhalf"], nil, nil},
-    {"Google Chrome", nil, primaryScreen(), geos["llarge"], nil, nil},
-    {"Firefox", nil, primaryScreen(), geos["llarge"], nil, nil},
+    {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["rthird"], nil, nil},
   },
   code2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Google Chrome", nil, primaryScreen(), geos["rlarge"], nil, nil},
-    {"Firefox", nil, primaryScreen(), geos["rlarge"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["lthird"], nil, nil},
   },
   filemgmt = {
-    {"Google Chrome", nil, primaryScreen(), geos["rhalf"], nil, nil},
-    {"Firefox", nil, primaryScreen(), geos["rhalf"], nil, nil},
     {"Terminal", nil, primaryScreen(), geos["rhalf"], nil, nil},
   },
 
   -- layout_app() layouts
   home3_chrome = {
-    {geos["lhalf"], primaryScreen()},
-    {geos["rhalf"], primaryScreen()},
+    {geos["lhalf"], primaryScreen()}, {geos["rhalf"], primaryScreen()},
   },
   home3_term = {
-    {geos["term"], primaryScreen()},
-    {geos["termr"], primaryScreen()},
-  },
-  home3_voicecal = {
-    {geos["tthird"], vScreen},
+    {geos["term"], primaryScreen()}, {geos["termr"], primaryScreen()},
   },
   filemgmt_finder = {
-    {geos["ltq"], primaryScreen()},
-    {geos["lbq"], primaryScreen()},
+    {geos["ltq"], primaryScreen()}, {geos["lbq"], primaryScreen()},
   },
   chrome2 = {
-    {geos["lhalf"], primaryScreen()},
-    {geos["rhalf"], primaryScreen()},
+    {geos["lhalf"], primaryScreen()}, {geos["rhalf"], primaryScreen()},
   },
   chrome3 = {
-    {geos["lthird"], primaryScreen()},
-    {geos["mthird"], primaryScreen()},
+    {geos["lthird"], primaryScreen()}, {geos["mthird"], primaryScreen()},
     {geos["rthird"], primaryScreen()},
   },
   chrome4 = {
-    {geos["ltq"], primaryScreen()},
-    {geos["rtq"], primaryScreen()},
-    {geos["lbq"], primaryScreen()},
-    {geos["rbq"], primaryScreen()},
+    {geos["ltq"], primaryScreen()}, {geos["rtq"], primaryScreen()},
+    {geos["lbq"], primaryScreen()}, {geos["rbq"], primaryScreen()},
   },
   chrome6 = {
-    {geos["ltthird"], primaryScreen()},
-    {geos["mtthird"], primaryScreen()},
-    {geos["rtthird"], primaryScreen()},
-    {geos["lbthird"], primaryScreen()},
-    {geos["mbthird"], primaryScreen()},
-    {geos["rbthird"], primaryScreen()},
+    {geos["ltthird"], primaryScreen()}, {geos["mtthird"], primaryScreen()},
+    {geos["rtthird"], primaryScreen()}, {geos["lbthird"], primaryScreen()},
+    {geos["mbthird"], primaryScreen()}, {geos["rbthird"], primaryScreen()},
   },
   zoom_chrome = {
-    {geos["mthird"], primaryScreen()},
-    {geos["rthird"], primaryScreen()},
+    {geos["mthird"], primaryScreen()}, {geos["rthird"], primaryScreen()},
   },
+
+  -- chain sequences (see chain() function below)
+  chain = {
+    term = { geos["term"], geos["termr"] },
+    left = { geos["lhalf"], geos["llarge"], geos["lthird"] },
+    right = { geos["rhalf"], geos["rlarge"], geos["rthird"] },
+    up = { geos["thalf"], geos["tlarge"], geos["tthird"] },
+    down = { geos["bhalf"], geos["blarge"], geos["bthird"] },
+
+    full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
+                  geos["lthird"], geos["mthird"], geos["rthird"],
+                  geos["tthird"], geos["cthird"], geos["bthird"],
+                  geos["ltthird"], geos["mtthird"], geos["rtthird"],
+                  geos["lbthird"], geos["mbthird"], geos["rbthird"] }
+
+
+  }
 }
-
--- chain sequences (see chain() function below)
-left = { geos["lhalf"], geos["llarge"], geos["lthird"] }
-right = { geos["rhalf"], geos["rlarge"], geos["rthird"] }
-up = { geos["thalf"], geos["tlarge"], geos["tthird"] }
-down = { geos["bhalf"], geos["blarge"], geos["bthird"] }
-
-full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
-              geos["lthird"], geos["mthird"], geos["rthird"],
-              geos["tthird"], geos["cthird"], geos["bthird"],
-              geos["ltthird"], geos["mtthird"], geos["rtthird"],
-              geos["lbthird"], geos["mbthird"], geos["rbthird"] }
-
-term = { geos["term"], geos["termr"] }
 
 -- get current id for dell, if available
 local dell_id = nil
@@ -283,8 +260,6 @@ local function switch_monitor_input()
   hs.execute("/usr/local/bin/m1ddc display " .. dell_id .. " set input " .. new_input)
 end
 
-local bind = hs.hotkey.bind
-
 -- resize bindings
 bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
 bind({"ctrl", "alt"}, "right", function () adjust("w", 20) end)
@@ -303,12 +278,12 @@ bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest() end
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast() end)
 
 -- chain bindings
-bind({"cmd", "alt"}, "Left", function() chain(left) end)
-bind({"cmd", "alt"}, "Right", function() chain(right) end)
-bind({"cmd", "alt"}, "Up", function () chain(up) end)
-bind({"cmd", "alt"}, "Down", function() chain(down) end)
-bind({"ctrl", "shift"}, "Right", function() chain(full_grid) end)
-bind({"cmd", "alt"}, "t", function() chain(term) end)
+bind({"cmd", "alt"}, "Left", function() chain(layouts["chain"]["left"]) end)
+bind({"cmd", "alt"}, "Right", function() chain(layouts["chain"]["right"]) end)
+bind({"cmd", "alt"}, "Up", function () chain(layouts["chain"]["up"]) end)
+bind({"cmd", "alt"}, "Down", function() chain(layouts["chain"]["down"]) end)
+bind({"ctrl", "shift"}, "Right", function() chain(layouts["chain"]["full_grid"]) end)
+bind({"cmd", "alt"}, "t", function() chain(layouts["chain"]["term"]) end)
 
 -- layout bindings
 bind({"cmd", "alt"}, "q", function()
