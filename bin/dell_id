@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/usr/local/bin/m1ddc display list | grep DELL | cut -c 1

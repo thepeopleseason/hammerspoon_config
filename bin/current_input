@@ -1,0 +1,10 @@
+#!/bin/bash
+
+while true; do
+    display_id=`/usr/local/bin/m1ddc display list | grep DELL | cut -c 1`
+    str=`/usr/local/bin/m1ddc display $display_id get input`
+    if [[ ! $str =~ 0 ]]; then
+        break
+    fi
+done
+echo $str
