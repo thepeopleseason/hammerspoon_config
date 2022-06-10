@@ -227,9 +227,21 @@ local function gridify(app_table)
   end
 end
 
-local function switchAudio(aud)
-  local device = hs.audiodevice.findDeviceByName(aud)
-  if device:setDefaultOutputDevice() then hs.alert.show("🔈" .. device:name()) end
+local function switchAudio()
+  local filter = { "S23C570", "ZoomAudioDevice" }
+  local choiceList = hs.fnutils.filter(
+    hs.audiodevice.allOutputDevices(),function(el) return not hs.fnutils.contains(filter, el:name()) end)
+
+  local chooser = hs.chooser.new(
+    function(choice)
+      if choice then
+        local dev = hs.audiodevice.findDeviceByName(choice["text"])
+        if dev:setDefaultOutputDevice() then hs.alert.show("🔈" .. device:name()) end
+      end
+    end)
+  chooser:rows(3)
+  chooser:choices(
+    hs.fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end)):show()
 end
 
 local function switchMonitorInput()
@@ -329,9 +341,7 @@ bind(hyper, "9", function() gridify(hs.window.focusedWindow():application():allW
 
 -- utility bindings
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, "h", function() switchAudio("External Headphones") end)
-bind(hyper, "s", function() switchAudio("MacBook Pro Speakers") end)
-bind(hyper, "m", function() switchAudio(dellScreen) end)
+bind(hyper, "a", function() switchAudio("External Headphones") end)
 
 bind(hyper, "i", function() if dellID then switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
