@@ -65,7 +65,7 @@ geos = {
   termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99),
 }
 
--- layouts for use with hs.layout.apply(), layout_app(), and chain()
+-- layouts for use with hs.layout.apply(), layoutApp(), and chain()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
@@ -97,7 +97,7 @@ layouts = {
     {"Terminal", nil, primaryScreen(), geos["rhalf"], nil, nil},
   },
 
-  -- layout_app() layouts
+  -- layoutApp() layouts
   home3_chrome = {
     {geos["lhalf"], primaryScreen()}, {geos["rhalf"], primaryScreen()},
   },
@@ -135,35 +135,37 @@ layouts = {
     up = { geos["thalf"], geos["tlarge"], geos["tthird"] },
     down = { geos["bhalf"], geos["blarge"], geos["bthird"] },
 
-    full_grid = { geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
-                  geos["lthird"], geos["mthird"], geos["rthird"],
-                  geos["tthird"], geos["cthird"], geos["bthird"],
-                  geos["ltthird"], geos["mtthird"], geos["rtthird"],
-                  geos["lbthird"], geos["mbthird"], geos["rbthird"] }
-
-
-  }
+    full_grid = {
+      geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
+      geos["lthird"], geos["mthird"], geos["rthird"],
+      geos["tthird"], geos["cthird"], geos["bthird"],
+      geos["ltthird"], geos["mtthird"], geos["rtthird"],
+      geos["lbthird"], geos["mbthird"], geos["rbthird"]
+    },
+  },
 }
 
 -- get current id for dell, if available
-local dell_id = nil
+local dellID = nil
 if hs.screen(dellScreen) then
   hs.task.new(
     "/Users/jhsiao/devel/dotfiles/bin/dell_id",
     function(exitCode, output, err)
-      dell_id = string.gsub(output, "%s", "")
+      dellID = string.gsub(output, "%s", "")
     end
   ):start():waitUntilExit()
 end
 
-function get_wf(app)
+function getWF(app)
   local wf=hs.window.filter
-  local filter = { currentSpace=true, rejectTitles={"Voice", "MCCal"}, visible=true }
+  local filter = {
+    currentSpace=true,
+    rejectTitles={"Voice", "MCCal"},
+    visible=true
+  }
 
-  if app then
-    return wf.new(app):setOverrideFilter(filter)
-  else
-    return wf.new(false):setDefaultFilter(filter)
+  if app then   return wf.new(app):setOverrideFilter(filter)
+  else          return wf.new(false):setDefaultFilter(filter)
   end
 end
 
@@ -173,7 +175,7 @@ local function round(x, places)
   return (x + 0.5 - (x + 0.5) % 1) / 10^places
 end
 
-local function current_window_rect(win)
+local function currentWindowRect(win)
   local win = win or hs.window.focusedWindow()
   local ur, r = win:screen():toUnitRect(win:frame()), round
   return {r(ur.x,2), r(ur.y,2), r(ur.w,2), r(ur.h,2)} -- an hs.geometry.unitrect table
@@ -183,30 +185,43 @@ table.indexOf = function (t, obj)
   if type(t) ~= "table" then error("table expected, got " .. type(t), 2) end
 
   for i, v in pairs(t) do
-    if obj == v then
-      return i
-    end
+    if obj == v then return i end
   end
 end
 
-local function next_position(t, urect)
-  local next_index = 1
-  local cur_index = table.indexOf(t, hs.geometry.unitrect(urect))
-  if cur_index then
-    next_index = cur_index + 1
-    if next_index > #t then
-      next_index = 1
-    end
+local function nextPosition(t, urect)
+  local nIdx = 1
+  local cIdx = table.indexOf(t, hs.geometry.unitrect(urect))
+  if cIdx then
+    nIdx = cIdx + 1
+    if nIdx > #t then nIdx = 1 end
   end
-  return t[next_index]
+  return t[nIdx]
+end
+
+local function moveOneSpaceEW(dir)
+  local win = hs.window.focusedWindow()
+  local uuid = win:screen():getUUID()
+  local spaceID = hs.spaces.activeSpaces()[uuid]
+  local screenTable = hs.spaces.allSpaces()[uuid]
+  local cIndex = table.indexOf(screenTable, spaceID)
+  local nIdx
+  if dir == "west" then
+    nIdx = cIndex - 1
+    if nIdx < 1 then nIdx = 1 end
+  elseif dir == "east" then
+    nIdx = cIndex + 1
+    if nIdx > #screenTable then nIdx = #screenTable end
+  end
+  hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
 end
 
 local function chain(t, win)
   local win = win or hs.window.focusedWindow()
-  win:move(next_position(t, current_window_rect(win)))
+  win:move(nextPosition(t, currentWindowRect(win)))
 end
 
-local function layout_app(wins, layout)
+local function layoutApp(wins, layout)
   for i, win in ipairs(wins) do
     local layout_index = i
     if layout_index > #layout then layout_index = #layout end
@@ -223,41 +238,50 @@ local function adjust(dim, amt)
 end
 
 local function gridify(app_table)
-  if     #app_table == 2 then layout_app(app_table, layouts["chrome2"])
-  elseif #app_table == 3 then layout_app(app_table, layouts["chrome3"])
-  elseif #app_table == 4 then layout_app(app_table, layouts["chrome4"])
-  elseif #app_table >= 5 then layout_app(app_table, layouts["chrome6"])
+  if     #app_table == 2 then layoutApp(app_table, layouts["chrome2"])
+  elseif #app_table == 3 then layoutApp(app_table, layouts["chrome3"])
+  elseif #app_table == 4 then layoutApp(app_table, layouts["chrome4"])
+  elseif #app_table >= 5 then layoutApp(app_table, layouts["chrome6"])
   end
 end
 
-local function switch_audio(aud)
+local function switchAudio(aud)
   local device = hs.audiodevice.findDeviceByName(aud)
-  if device:setDefaultOutputDevice() then
-    hs.alert.show("🔈" .. device:name())
-  end
+  if device:setDefaultOutputDevice() then hs.alert.show("🔈" .. device:name()) end
 end
 
-local function switch_monitor_input()
-  local current_monitor_input = "27"
-  local new_input
+local function switchMonitorInput()
+  local cInput = "27"
+  local nInput
 
   hs.task.new(
     "/Users/jhsiao/devel/dotfiles/bin/current_input",
-    function(exitCode, output, err)
-      current_monitor_input = string.gsub(output, "%s", "")
-    end
+    function(exitCode, output, err) cInput = string.gsub(output, "%s", "") end
   ):start():waitUntilExit()
 
-  if current_monitor_input == "27" then
-    -- HDMI 1
-    new_input = "17"
+  if cInput == "27" then
+    nInput = "17" -- switch to HDMI 1
     spoon.Caffeine:setState(true)
   else
-    -- USB-C
-    new_input = "27"
+    nInput = "27" -- switch to USB-C
     spoon.Caffeine:setState(false)
   end
-  hs.execute("/usr/local/bin/m1ddc display " .. dell_id .. " set input " .. new_input)
+  hs.execute("/usr/local/bin/m1ddc display " .. dellID .. " set input " .. nInput)
+end
+
+function pingResult(object, message, seqnum, error)
+  if message == "didFinish" then
+    avg = tonumber(string.match(object:summary(), '/(%d+.%d+)/'))
+    if avg == 0.0 then
+      hs.alert.show("No network")
+    elseif avg < 200.0 then
+      hs.alert.show("Network good (" .. avg .. "ms)")
+    elseif avg < 500.0 then
+      hs.alert.show("Network poor(" .. avg .. "ms)")
+    else
+      hs.alert.show("Network bad(" .. avg .. "ms)")
+    end
+  end
 end
 
 -- resize bindings
@@ -276,54 +300,60 @@ bind({"ctrl", "alt", "shift"}, "down", function () adjust("y", 50) end)
 -- throw bindings
 bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest() end)
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast() end)
+bind({"ctrl", "cmd", "shift"}, "left", function() moveOneSpaceEW("west") end)
+bind({"ctrl", "cmd", "shift"}, "right", function() moveOneSpaceEW("east") end)
 
 -- chain bindings
-bind({"cmd", "alt"}, "Left", function() chain(layouts["chain"]["left"]) end)
-bind({"cmd", "alt"}, "Right", function() chain(layouts["chain"]["right"]) end)
-bind({"cmd", "alt"}, "Up", function () chain(layouts["chain"]["up"]) end)
-bind({"cmd", "alt"}, "Down", function() chain(layouts["chain"]["down"]) end)
-bind({"ctrl", "shift"}, "Right", function() chain(layouts["chain"]["full_grid"]) end)
+bind({"cmd", "alt"}, "left", function() chain(layouts["chain"]["left"]) end)
+bind({"cmd", "alt"}, "right", function() chain(layouts["chain"]["right"]) end)
+bind({"cmd", "alt"}, "up", function () chain(layouts["chain"]["up"]) end)
+bind({"cmd", "alt"}, "down", function() chain(layouts["chain"]["down"]) end)
 bind({"cmd", "alt"}, "t", function() chain(layouts["chain"]["term"]) end)
+bind({"ctrl", "shift"}, "right", function() chain(layouts["chain"]["full_grid"]) end)
 
 -- layout bindings
 bind({"cmd", "alt"}, "q", function()
-  wins = get_wf():rejectApp("zoom.us"):getWindows()
-  if     #wins == 1 then layout_app(wins, {{geos["rlarge"], primaryScreen()}})
-  elseif #wins  > 1 then layout_app(wins, layouts["zoom_chrome"])
+  wins = getWF():rejectApp("zoom.us"):getWindows()
+  if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], primaryScreen()}})
+  elseif #wins  > 1 then layoutApp(wins, layouts["zoom_chrome"])
   end
   hs.layout.apply(layouts["zoombrowse"])
 end)
 bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
 bind({"cmd", "alt"}, "m", function()
   hs.layout.apply(layouts["filemgmt"])
-  layout_app(get_wf("Finder"):getWindows(), layouts["filemgmt_finder"])
+  layoutApp(getWF("Finder"):getWindows(), layouts["filemgmt_finder"])
 end)
 bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
 bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 
 bind({"cmd", "alt"}, "3",
      function() hs.layout.apply(layouts["home3"])
-       layout_app(get_wf("Terminal"):getWindows(), layouts["home3_term"])
-       layout_app(get_wf(browsers):getWindows(), layouts["home3_chrome"])
-       layout_app(
-         hs.window.filter.new(browsers):setOverrideFilter({allowTitles={"Voice", "MCCal"}}):getWindows(),
+       layoutApp(getWF("Terminal"):getWindows(), layouts["home3_term"])
+       layoutApp(getWF(browsers):getWindows(), layouts["home3_chrome"])
+       layoutApp(
+         hs.window.filter.new(browsers):setOverrideFilter(
+           {allowTitles={"Voice", "MCCal"}}):getWindows(),
          {{ geos["tthird"], vScreen }})
      end)
 
 bind({"cmd", "alt"}, "h",
-     function() layout_app(get_wf(browsers):getWindows(), layouts["chrome2"]) end)
+     function() layoutApp(getWF(browsers):getWindows(), layouts["chrome2"]) end)
 bind({"cmd", "alt"}, "4",
-     function() layout_app(get_wf(browsers):getWindows(), layouts["chrome4"]) end)
-bind({"cmd", "alt"}, "9", function() gridify(get_wf():getWindows()) end)
+     function() layoutApp(getWF(browsers):getWindows(), layouts["chrome4"]) end)
+bind({"cmd", "alt"}, "9", function() gridify(getWF():getWindows()) end)
 bind(hyper, "9", function() gridify(hs.window.focusedWindow():application():allWindows()) end)
 
 -- utility bindings
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, "h", function() switch_audio("External Headphones") end)
-bind(hyper, "s", function() switch_audio("MacBook Pro Speakers") end)
-bind(hyper, "m", function() switch_audio("DELL U3419W") end)
-bind(hyper, "i", function() if dell_id then switch_monitor_input() end end)
+bind(hyper, "h", function() switchAudio("External Headphones") end)
+bind(hyper, "s", function() switchAudio("MacBook Pro Speakers") end)
+bind(hyper, "m", function() switchAudio(dellScreen) end)
+
+bind(hyper, "i", function() if dellID then switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
+bind(hyper, "n", function() hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult) end)
+
 bind({"cmd", "alt"}, "0", function() hs.reload() end)
 
 hs.ipc.cliStatus() -- load IPC for commandline util
