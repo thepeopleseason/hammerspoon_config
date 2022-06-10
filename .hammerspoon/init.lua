@@ -181,17 +181,9 @@ local function currentWindowRect(win)
   return {r(ur.x,2), r(ur.y,2), r(ur.w,2), r(ur.h,2)} -- an hs.geometry.unitrect table
 end
 
-table.indexOf = function (t, obj)
-  if type(t) ~= "table" then error("table expected, got " .. type(t), 2) end
-
-  for i, v in pairs(t) do
-    if obj == v then return i end
-  end
-end
-
 local function nextPosition(t, urect)
   local nIdx = 1
-  local cIdx = table.indexOf(t, hs.geometry.unitrect(urect))
+  local cIdx = hs.fnutils.indexOf(t, hs.geometry.unitrect(urect))
   if cIdx then
     nIdx = cIdx + 1
     if nIdx > #t then nIdx = 1 end
@@ -199,12 +191,17 @@ local function nextPosition(t, urect)
   return t[nIdx]
 end
 
+local function chain(t, win)
+  local win = win or hs.window.focusedWindow()
+  win:move(nextPosition(t, currentWindowRect(win)))
+end
+
 local function moveOneSpaceEW(dir)
   local win = hs.window.focusedWindow()
   local uuid = win:screen():getUUID()
   local spaceID = hs.spaces.activeSpaces()[uuid]
   local screenTable = hs.spaces.allSpaces()[uuid]
-  local cIndex = table.indexOf(screenTable, spaceID)
+  local cIndex = hs.fnutils.indexOf(screenTable, spaceID)
   local nIdx
   if dir == "west" then
     nIdx = cIndex - 1
@@ -214,11 +211,6 @@ local function moveOneSpaceEW(dir)
     if nIdx > #screenTable then nIdx = #screenTable end
   end
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
-end
-
-local function chain(t, win)
-  local win = win or hs.window.focusedWindow()
-  win:move(nextPosition(t, currentWindowRect(win)))
 end
 
 local function layoutApp(wins, layout)
