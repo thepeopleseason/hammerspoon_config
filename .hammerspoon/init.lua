@@ -45,21 +45,21 @@ geos = {
   rtq = hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
   rbq = hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5),
 
-  lthird = hs.geometry.unitrect(0.0, 0.0, 0.33, 1.0),
-  mthird = hs.geometry.unitrect(0.33, 0.0, 0.33, 1.0),
-  rthird = hs.geometry.unitrect(0.66, 0.0, 0.33, 1.0),
+  l3 = hs.geometry.unitrect(0.0, 0.0, 0.33, 1.0),
+  m3 = hs.geometry.unitrect(0.33, 0.0, 0.33, 1.0),
+  r3 = hs.geometry.unitrect(0.66, 0.0, 0.33, 1.0),
 
-  ltthird = hs.geometry.unitrect(0.0, 0.0, 0.33, 0.5),
-  mtthird = hs.geometry.unitrect(0.33, 0.0, 0.33, 0.5),
-  rtthird = hs.geometry.unitrect(0.66, 0.0, 0.33, 0.5),
+  lt3 = hs.geometry.unitrect(0.0, 0.0, 0.33, 0.5),
+  mt3 = hs.geometry.unitrect(0.33, 0.0, 0.33, 0.5),
+  rt3 = hs.geometry.unitrect(0.66, 0.0, 0.33, 0.5),
 
-  lbthird = hs.geometry.unitrect(0.0, 0.5, 0.33, 0.5),
-  mbthird = hs.geometry.unitrect(0.33, 0.5, 0.33, 0.5),
-  rbthird = hs.geometry.unitrect(0.66, 0.5, 0.33, 0.5),
+  lb3 = hs.geometry.unitrect(0.0, 0.5, 0.33, 0.5),
+  mb3 = hs.geometry.unitrect(0.33, 0.5, 0.33, 0.5),
+  rb3 = hs.geometry.unitrect(0.66, 0.5, 0.33, 0.5),
 
-  tthird = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.33),
-  cthird = hs.geometry.unitrect(0.0, 0.33, 1.0, 0.33),
-  bthird = hs.geometry.unitrect(0.0, 0.66, 1.0, 0.33),
+  t3 = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.33),
+  c3 = hs.geometry.unitrect(0.0, 0.33, 1.0, 0.33),
+  b3 = hs.geometry.unitrect(0.0, 0.66, 1.0, 0.33),
 
   term = hs.geometry.unitrect(0.0, 0.0, 0.29, 0.99),
   termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99),
@@ -74,73 +74,61 @@ layouts = {
     {"Firefox", nil, laptopScreen, geos["fs"], nil, nil},
     {"Terminal", nil, laptopScreen, geos["term"], nil, nil},
   },
-  zoombrowse = {
-    {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
-  },
   home3 = {
     {"Slack", nil, vScreen, geos["blarge"], nil, nil},
-    {"zoom.us", nil, primaryScreen(), geos["lthird"], nil, nil},
+    {"zoom.us", nil, primaryScreen(), geos["l3"], nil, nil},
   },
   v2 = {
     {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Terminal", nil, primaryScreen(), geos["tthird"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["t3"], nil, nil},
   },
   pcm2 = {
     {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Terminal", nil, primaryScreen(), geos["rthird"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["r3"], nil, nil},
   },
   code2 = {
     {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Terminal", nil, primaryScreen(), geos["lthird"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["l3"], nil, nil},
   },
   filemgmt = {
-    {"Terminal", nil, primaryScreen(), geos["rhalf"], nil, nil},
+    {"Terminal", nil, primaryScreen(), geos["m3"], nil, nil},
   },
 
   -- layoutApp() layouts
-  home3_chrome = {
+  halves = {
     {geos["lhalf"], primaryScreen()}, {geos["rhalf"], primaryScreen()},
   },
-  home3_term = {
-    {geos["term"], primaryScreen()}, {geos["termr"], primaryScreen()},
+  thirds = {
+    {geos["l3"], primaryScreen()}, {geos["m3"], primaryScreen()},
+    {geos["r3"], primaryScreen()},
   },
-  filemgmt_finder = {
-    {geos["ltq"], primaryScreen()}, {geos["lbq"], primaryScreen()},
-  },
-  chrome2 = {
-    {geos["lhalf"], primaryScreen()}, {geos["rhalf"], primaryScreen()},
-  },
-  chrome3 = {
-    {geos["lthird"], primaryScreen()}, {geos["mthird"], primaryScreen()},
-    {geos["rthird"], primaryScreen()},
-  },
-  chrome4 = {
+  quads = {
     {geos["ltq"], primaryScreen()}, {geos["rtq"], primaryScreen()},
     {geos["lbq"], primaryScreen()}, {geos["rbq"], primaryScreen()},
   },
-  chrome6 = {
-    {geos["ltthird"], primaryScreen()}, {geos["mtthird"], primaryScreen()},
-    {geos["rtthird"], primaryScreen()}, {geos["lbthird"], primaryScreen()},
-    {geos["mbthird"], primaryScreen()}, {geos["rbthird"], primaryScreen()},
+  sixths = {
+    {geos["lt3"], primaryScreen()}, {geos["mt3"], primaryScreen()},
+    {geos["rt3"], primaryScreen()}, {geos["lb3"], primaryScreen()},
+    {geos["mb3"], primaryScreen()}, {geos["rb3"], primaryScreen()},
   },
-  zoom_chrome = {
-    {geos["mthird"], primaryScreen()}, {geos["rthird"], primaryScreen()},
+  r3s = {
+    {geos["m3"], primaryScreen()}, {geos["r3"], primaryScreen()},
   },
 
   -- chain sequences (see chain() function below)
   chain = {
     term = { geos["term"], geos["termr"] },
-    left = { geos["lhalf"], geos["llarge"], geos["lthird"] },
-    right = { geos["rhalf"], geos["rlarge"], geos["rthird"] },
-    up = { geos["thalf"], geos["tlarge"], geos["tthird"] },
-    down = { geos["bhalf"], geos["blarge"], geos["bthird"] },
+    left = { geos["lhalf"], geos["llarge"], geos["l3"] },
+    right = { geos["rhalf"], geos["rlarge"], geos["r3"] },
+    up = { geos["thalf"], geos["tlarge"], geos["t3"] },
+    down = { geos["bhalf"], geos["blarge"], geos["b3"] },
 
     full_grid = {
       geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
-      geos["lthird"], geos["mthird"], geos["rthird"],
-      geos["tthird"], geos["cthird"], geos["bthird"],
-      geos["ltthird"], geos["mtthird"], geos["rtthird"],
-      geos["lbthird"], geos["mbthird"], geos["rbthird"]
+      geos["l3"], geos["m3"], geos["r3"],
+      geos["t3"], geos["c3"], geos["b3"],
+      geos["lt3"], geos["mt3"], geos["rt3"],
+      geos["lb3"], geos["mb3"], geos["rb3"]
     },
   },
 }
@@ -156,16 +144,18 @@ if hs.screen(dellScreen) then
   ):start():waitUntilExit()
 end
 
-function getWF(app)
+function getWF(app, filter)
   local wf=hs.window.filter
-  local filter = {
+  filter = filter or {
     currentSpace=true,
     rejectTitles={"Voice", "MCCal"},
     visible=true
   }
 
-  if app then   return wf.new(app):setOverrideFilter(filter)
-  else          return wf.new(false):setDefaultFilter(filter)
+  if app then
+    return wf.new(app):setOverrideFilter(filter)
+  else
+    return wf.new(false):setDefaultFilter(filter)
   end
 end
 
@@ -230,10 +220,10 @@ local function adjust(dim, amt)
 end
 
 local function gridify(app_table)
-  if     #app_table == 2 then layoutApp(app_table, layouts["chrome2"])
-  elseif #app_table == 3 then layoutApp(app_table, layouts["chrome3"])
-  elseif #app_table == 4 then layoutApp(app_table, layouts["chrome4"])
-  elseif #app_table >= 5 then layoutApp(app_table, layouts["chrome6"])
+  if     #app_table == 2 then layoutApp(app_table, layouts["halves"])
+  elseif #app_table == 3 then layoutApp(app_table, layouts["thirds"])
+  elseif #app_table == 4 then layoutApp(app_table, layouts["quads"])
+  elseif #app_table >= 5 then layoutApp(app_table, layouts["sixths"])
   end
 end
 
@@ -305,34 +295,35 @@ bind({"ctrl", "shift"}, "right", function() chain(layouts["chain"]["full_grid"])
 
 -- layout bindings
 bind({"cmd", "alt"}, "q", function()
-  wins = getWF():rejectApp("zoom.us"):getWindows()
+  layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], primaryScreen()}})
+  wins = getWF():rejectApp("zoom.us"):rejectApp("Slack"):getWindows()
   if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], primaryScreen()}})
-  elseif #wins  > 1 then layoutApp(wins, layouts["zoom_chrome"])
+  elseif #wins  > 1 then layoutApp(wins, layouts["r3s"])
   end
-  hs.layout.apply(layouts["zoombrowse"])
 end)
 bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
 bind({"cmd", "alt"}, "m", function()
   hs.layout.apply(layouts["filemgmt"])
-  layoutApp(getWF("Finder"):getWindows(), layouts["filemgmt_finder"])
+  layoutApp(getWF("Finder"):getWindows(),
+            {{geos["lt3"], primaryScreen()}, {geos["lb3"], primaryScreen()}})
+  layoutApp(getWF():rejectApp("Finder"):rejectApp("Slack")
+            :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
 bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
 bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
-
 bind({"cmd", "alt"}, "3",
      function() hs.layout.apply(layouts["home3"])
-       layoutApp(getWF("Terminal"):getWindows(), layouts["home3_term"])
-       layoutApp(getWF(browsers):getWindows(), layouts["home3_chrome"])
-       layoutApp(
-         hs.window.filter.new(browsers):setOverrideFilter(
-           {allowTitles={"Voice", "MCCal"}}):getWindows(),
-         {{ geos["tthird"], vScreen }})
+       layoutApp(getWF("Terminal"):getWindows(),
+                 {{geos["term"], primaryScreen()}, {geos["termr"], primaryScreen()}})
+       layoutApp(getWF(browsers):getWindows(), layouts["halves"])
+       layoutApp(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
+                 {{ geos["t3"], vScreen }})
      end)
 
 bind({"cmd", "alt"}, "h",
-     function() layoutApp(getWF(browsers):getWindows(), layouts["chrome2"]) end)
+     function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
 bind({"cmd", "alt"}, "4",
-     function() layoutApp(getWF(browsers):getWindows(), layouts["chrome4"]) end)
+     function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
 bind({"cmd", "alt"}, "9", function() gridify(getWF():getWindows()) end)
 bind(hyper, "9", function() gridify(hs.window.focusedWindow():application():allWindows()) end)
 
@@ -350,4 +341,3 @@ bind({"cmd", "alt"}, "0", function() hs.reload() end)
 
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert.show("Config loaded")
-
