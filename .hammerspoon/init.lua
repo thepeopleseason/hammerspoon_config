@@ -230,18 +230,21 @@ end
 local function switchAudio()
   local filter = { "S23C570", "ZoomAudioDevice" }
   local choiceList = hs.fnutils.filter(
-    hs.audiodevice.allOutputDevices(),function(el) return not hs.fnutils.contains(filter, el:name()) end)
+    hs.audiodevice.allOutputDevices(),
+    function(el) return not hs.fnutils.contains(filter, el:name()) end)
 
   local chooser = hs.chooser.new(
     function(choice)
       if choice then
         local dev = hs.audiodevice.findDeviceByName(choice["text"])
-        if dev:setDefaultOutputDevice() then hs.alert.show("🔈" .. device:name()) end
+        if dev and dev:setDefaultOutputDevice() then
+          hs.alert.show("🔈" .. dev:name())
+        end
       end
     end)
-  chooser:rows(3)
   chooser:choices(
-    hs.fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end)):show()
+    hs.fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end))
+  chooser:placeholderText("Choose audio output:"):rows(0):width(25):show()
 end
 
 local function switchMonitorInput()
