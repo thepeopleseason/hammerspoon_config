@@ -244,7 +244,7 @@ local function switchAudio()
     end)
   chooser:choices(
     hs.fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end))
-  chooser:placeholderText("Choose audio output:"):rows(0):width(25):show()
+  chooser:placeholderText("Choose audio output:"):rows(0):width(20):show()
 end
 
 local function switchMonitorInput()
@@ -282,23 +282,27 @@ function pingResult(object, message, seqnum, error)
 end
 
 -- resize bindings
-bind({"ctrl", "alt"}, "left", function () adjust("w", -20) end)
-bind({"ctrl", "alt"}, "right", function () adjust("w", 20) end)
-bind({"ctrl", "alt"}, "up", function () adjust("h", -20) end)
-bind({"ctrl", "alt"}, "down", function () adjust("h", 20) end)
+local resize = hs.hotkey.modal.new(hyper, 'r', "Resize mode")
+resize:bind(nil, "left", function () adjust("w", -20) end)
+resize:bind(nil, "right", function () adjust("w", 20) end)
+resize:bind(nil, "up", function () adjust("h", -20) end)
+resize:bind(nil, "down", function () adjust("h", 20) end)
+resize:bind(nil, 'escape', function() resize:exit() hs.alert'Exited resize mode' end)
 bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
 
 -- nudge bindings
-bind({"ctrl", "alt", "shift"}, "left", function () adjust("x", -50) end)
-bind({"ctrl", "alt", "shift"}, "right", function () adjust("x", 50) end)
-bind({"ctrl", "alt", "shift"}, "up", function () adjust("y", -50) end)
-bind({"ctrl", "alt", "shift"}, "down", function () adjust("y", 50) end)
+local nudge = hs.hotkey.modal.new(hyper, 'n', "Nudge mode")
+nudge:bind(nil, "left", function () adjust("x", -50) end)
+nudge:bind(nil, "right", function () adjust("x", 50) end)
+nudge:bind(nil, "up", function () adjust("y", -50) end)
+nudge:bind(nil, "down", function () adjust("y", 50) end)
+nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' end)
 
 -- throw bindings
 bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest() end)
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast() end)
-bind({"ctrl", "cmd", "shift"}, "left", function() moveOneSpaceEW("west") end)
-bind({"ctrl", "cmd", "shift"}, "right", function() moveOneSpaceEW("east") end)
+bind({"ctrl", "alt"}, "left", function() moveOneSpaceEW("west") end)
+bind({"ctrl", "alt"}, "right", function() moveOneSpaceEW("east") end)
 
 -- chain bindings
 bind({"cmd", "alt"}, "left", function() chain(layouts["chain"]["left"]) end)
@@ -326,8 +330,7 @@ bind({"cmd", "alt"}, "m", function()
 end)
 bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
 bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
-bind({"cmd", "alt"}, "3",
-     function() hs.layout.apply(layouts["home3"])
+bind({"cmd", "alt"}, "3", function() hs.layout.apply(layouts["home3"])
        layoutApp(getWF("Terminal"):getWindows(),
                  {{geos["term"], myScreens()[1]}, {geos["termr"], myScreens()[1]}})
        layoutApp(getWF(browsers):getWindows(), layouts["halves"])
@@ -335,20 +338,17 @@ bind({"cmd", "alt"}, "3",
                  {{ geos["t3"], myScreens()[2] }})
      end)
 
-bind({"cmd", "alt"}, "h",
-     function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
-bind({"cmd", "alt"}, "4",
-     function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
+bind({"cmd", "alt"}, "h", function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
+bind({"cmd", "alt"}, "4", function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
 bind({"cmd", "alt"}, "9", function() pane(getWF(nil,{}):getWindows()) end)
-bind(hyper, "9", function()
-       pane(hs.window.focusedWindow():application():allWindows()) end)
+bind(hyper, "9", function() pane(hs.window.focusedWindow():application():allWindows()) end)
 
 -- utility bindings
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, "i", function() if dellID then switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
 
-local utils = hs.hotkey.modal.new(hyper, 's', "Utility mode")
+local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() switchAudio() utils:exit() end)
 utils:bind(nil, 'n', function()
   hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult)
@@ -356,7 +356,8 @@ utils:bind(nil, 'n', function()
 end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
-bind({"cmd", "alt"}, "0", function() hs.reload() end)
+bind({"cmd", "alt"}, "0", 'Reload config', function() hs.reload() end)
 
+hs.hotkey.showHotkeys({"cmd", "alt"}, 'k')
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert'Config loaded'
