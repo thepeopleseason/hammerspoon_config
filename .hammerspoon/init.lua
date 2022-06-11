@@ -5,18 +5,18 @@ spoon.Caffeine:start()
 
 -- define constants
 -- screens
-local laptopScreen = "Built-in Retina Display"
-local vScreen = "S23C570"
+local mbpScreen = "Built-in Retina Display"
+local samsungScreen = "S23C570"
 local dellScreen = "DELL U3419W"
 local miamiScreen = "HP S2031"
 
-local function primaryScreen()
+local function myScreens()
   if hs.screen(dellScreen) then
-    return hs.screen(dellScreen)
+    return { hs.screen(dellScreen), hs.screen(samsungScreen) }
   elseif hs.screen(miamiScreen) then
-    return hs.screen(miamiScreen)
+    return { hs.screen(miamiScreen), hs.screen(mbpScreen) }
   else
-    return nil
+    return { hs.screen(mbpScreen), hs.screen(mbpScreen) }
   end
 end
 
@@ -69,50 +69,50 @@ geos = {
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
-    {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Google Chrome", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Firefox", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Terminal", nil, laptopScreen, geos["term"], nil, nil},
+    {"Slack", nil, myScreens()[1], geos["fs"], nil, nil},
+    {"Google Chrome", nil, myScreens()[1], geos["fs"], nil, nil},
+    {"Firefox", nil, myScreens()[1], geos["fs"], nil, nil},
+    {"Terminal", nil, myScreens()[1], geos["lhalf"], nil, nil},
   },
   home3 = {
-    {"Slack", nil, vScreen, geos["blarge"], nil, nil},
-    {"zoom.us", nil, primaryScreen(), geos["l3"], nil, nil},
+    {"Slack", nil, myScreens()[2], geos["blarge"], nil, nil},
+    {"zoom.us", nil, myScreens()[1], geos["l3"], nil, nil},
   },
   v2 = {
-    {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Terminal", nil, primaryScreen(), geos["t3"], nil, nil},
+    {"Slack", nil, myScreens()[2], geos["fs"], nil, nil},
+    {"Terminal", nil, myScreens()[1], geos["t3"], nil, nil},
   },
   pcm2 = {
-    {"Slack", nil, laptopScreen, geos["fs"], nil, nil},
-    {"Terminal", nil, primaryScreen(), geos["r3"], nil, nil},
+    {"Slack", nil, myScreens()[2], geos["fs"], nil, nil},
+    {"Terminal", nil, myScreens()[1], geos["r3"], nil, nil},
   },
   code2 = {
-    {"Slack", nil, laptopScreen, geos["bhalf"], nil, nil},
-    {"Terminal", nil, primaryScreen(), geos["l3"], nil, nil},
+    {"Slack", nil, myScreens()[2], geos["bhalf"], nil, nil},
+    {"Terminal", nil, myScreens()[1], geos["l3"], nil, nil},
   },
   filemgmt = {
-    {"Terminal", nil, primaryScreen(), geos["m3"], nil, nil},
+    {"Terminal", nil, myScreens()[1], geos["m3"], nil, nil},
   },
 
   -- layoutApp() layouts
   halves = {
-    {geos["lhalf"], primaryScreen()}, {geos["rhalf"], primaryScreen()},
+    {geos["lhalf"], myScreens()[1]}, {geos["rhalf"], myScreens()[1]},
   },
   thirds = {
-    {geos["l3"], primaryScreen()}, {geos["m3"], primaryScreen()},
-    {geos["r3"], primaryScreen()},
+    {geos["l3"], myScreens()[1]}, {geos["m3"], myScreens()[1]},
+    {geos["r3"], myScreens()[1]},
   },
   quads = {
-    {geos["ltq"], primaryScreen()}, {geos["rtq"], primaryScreen()},
-    {geos["lbq"], primaryScreen()}, {geos["rbq"], primaryScreen()},
+    {geos["ltq"], myScreens()[1]}, {geos["rtq"], myScreens()[1]},
+    {geos["lbq"], myScreens()[1]}, {geos["rbq"], myScreens()[1]},
   },
   sixths = {
-    {geos["lt3"], primaryScreen()}, {geos["mt3"], primaryScreen()},
-    {geos["rt3"], primaryScreen()}, {geos["lb3"], primaryScreen()},
-    {geos["mb3"], primaryScreen()}, {geos["rb3"], primaryScreen()},
+    {geos["lt3"], myScreens()[1]}, {geos["mt3"], myScreens()[1]},
+    {geos["rt3"], myScreens()[1]}, {geos["lb3"], myScreens()[1]},
+    {geos["mb3"], myScreens()[1]}, {geos["rb3"], myScreens()[1]},
   },
   r3s = {
-    {geos["m3"], primaryScreen()}, {geos["r3"], primaryScreen()},
+    {geos["m3"], myScreens()[1]}, {geos["r3"], myScreens()[1]},
   },
 
   -- chain sequences (see chain() function below)
@@ -310,9 +310,9 @@ bind({"ctrl", "shift"}, "right", function() chain(layouts["chain"]["full_grid"])
 
 -- layout bindings
 bind({"cmd", "alt"}, "q", function()
-  layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], primaryScreen()}})
+  layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], myScreens()[1]}})
   wins = getWF():rejectApp("zoom.us"):rejectApp("Slack"):getWindows()
-  if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], primaryScreen()}})
+  if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], myScreens()[1]}})
   elseif #wins  > 1 then layoutApp(wins, layouts["r3s"])
   end
 end)
@@ -320,7 +320,7 @@ bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
 bind({"cmd", "alt"}, "m", function()
   hs.layout.apply(layouts["filemgmt"])
   layoutApp(getWF("Finder"):getWindows(),
-            {{geos["lt3"], primaryScreen()}, {geos["lb3"], primaryScreen()}})
+            {{geos["lt3"], myScreens()[1]}, {geos["lb3"], myScreens()[1]}})
   layoutApp(getWF():rejectApp("Finder"):rejectApp("Slack")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
@@ -329,10 +329,10 @@ bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 bind({"cmd", "alt"}, "3",
      function() hs.layout.apply(layouts["home3"])
        layoutApp(getWF("Terminal"):getWindows(),
-                 {{geos["term"], primaryScreen()}, {geos["termr"], primaryScreen()}})
+                 {{geos["term"], myScreens()[1]}, {geos["termr"], myScreens()[1]}})
        layoutApp(getWF(browsers):getWindows(), layouts["halves"])
        layoutApp(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
-                 {{ geos["t3"], vScreen }})
+                 {{ geos["t3"], myScreens()[2] }})
      end)
 
 bind({"cmd", "alt"}, "h",
