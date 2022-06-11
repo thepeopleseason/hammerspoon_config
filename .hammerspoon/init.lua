@@ -219,11 +219,11 @@ local function adjust(dim, amt)
   win:setFrame(f)
 end
 
-local function gridify(app_table)
-  if     #app_table == 2 then layoutApp(app_table, layouts["halves"])
-  elseif #app_table == 3 then layoutApp(app_table, layouts["thirds"])
-  elseif #app_table == 4 then layoutApp(app_table, layouts["quads"])
-  elseif #app_table >= 5 then layoutApp(app_table, layouts["sixths"])
+local function pane(wins)
+  if     #wins == 2 then layoutApp(wins, layouts["halves"])
+  elseif #wins == 3 then layoutApp(wins, layouts["thirds"])
+  elseif #wins == 4 then layoutApp(wins, layouts["quads"])
+  elseif #wins >= 5 then layoutApp(wins, layouts["sixths"])
   end
 end
 
@@ -339,13 +339,13 @@ bind({"cmd", "alt"}, "h",
      function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
 bind({"cmd", "alt"}, "4",
      function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
-bind({"cmd", "alt"}, "9", function() gridify(getWF():getWindows()) end)
-bind(hyper, "9", function() gridify(hs.window.focusedWindow():application():allWindows()) end)
+bind({"cmd", "alt"}, "9", function() pane(getWF(nil,{}):getWindows()) end)
+bind(hyper, "9", function()
+       pane(hs.window.focusedWindow():application():allWindows()) end)
 
 -- utility bindings
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, "a", function() switchAudio("External Headphones") end)
-
+bind(hyper, "a", function() switchAudio() end)
 bind(hyper, "i", function() if dellID then switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
 bind(hyper, "n", function() hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult) end)
