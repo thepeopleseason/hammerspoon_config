@@ -159,31 +159,22 @@ function getWF(app, filter)
   end
 end
 
-local function round(x, places)
-  local places = places or 0
-  local x = x * 10^places
-  return (x + 0.5 - (x + 0.5) % 1) / 10^places
-end
-
-local function currentWindowRect(win)
-  local win = win or hs.window.focusedWindow()
-  local ur, r = win:screen():toUnitRect(win:frame()), round
-  return {r(ur.x,2), r(ur.y,2), r(ur.w,2), r(ur.h,2)} -- an hs.geometry.unitrect table
-end
-
-local function nextPosition(t, urect)
-  local nIdx = 1
-  local cIdx = hs.fnutils.indexOf(t, hs.geometry.unitrect(urect))
-  if cIdx then
-    nIdx = cIdx + 1
-    if nIdx > #t then nIdx = 1 end
+local windowChains = {}
+local function winChainIter(t, id)
+  local i, n = windowChains[id] or 0, #t
+  return function()
+    i = i + 1
+    if i > n then i = 1 end
+    windowChains[id] = i
+    return t[i]
   end
-  return t[nIdx]
 end
 
-local function chain(t, win)
+local function chain(t, dir, win)
   local win = win or hs.window.focusedWindow()
-  win:move(nextPosition(t, currentWindowRect(win)))
+  local iter = winChainIter(t, win:id()..dir)
+  win:move(iter())
+  print(hs.inspect(windowChains))
 end
 
 local function moveOneSpaceEW(dir)
@@ -305,12 +296,12 @@ bind({"ctrl", "alt"}, "left", function() moveOneSpaceEW("west") end)
 bind({"ctrl", "alt"}, "right", function() moveOneSpaceEW("east") end)
 
 -- chain bindings
-bind({"cmd", "alt"}, "left", function() chain(layouts["chain"]["left"]) end)
-bind({"cmd", "alt"}, "right", function() chain(layouts["chain"]["right"]) end)
-bind({"cmd", "alt"}, "up", function () chain(layouts["chain"]["up"]) end)
-bind({"cmd", "alt"}, "down", function() chain(layouts["chain"]["down"]) end)
-bind({"cmd", "alt"}, "t", function() chain(layouts["chain"]["term"]) end)
-bind({"ctrl", "shift"}, "right", function() chain(layouts["chain"]["full_grid"]) end)
+bind({"cmd", "alt"}, "left", function() chain(layouts["chain"]["left"], "l") end)
+bind({"cmd", "alt"}, "right", function() chain(layouts["chain"]["right"], "r") end)
+bind({"cmd", "alt"}, "up", function () chain(layouts["chain"]["up"], "u") end)
+bind({"cmd", "alt"}, "down", function() chain(layouts["chain"]["down"], "d") end)
+bind({"cmd", "alt"}, "t", function() chain(layouts["chain"]["term"], "t") end)
+bind({"ctrl", "shift"}, "right", function() chain(layouts["chain"]["full_grid"], "g") end)
 
 -- layout bindings
 bind({"cmd", "alt"}, "q", function()
