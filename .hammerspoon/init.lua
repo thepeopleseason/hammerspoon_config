@@ -345,12 +345,18 @@ bind(hyper, "9", function()
 
 -- utility bindings
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, "a", function() switchAudio() end)
 bind(hyper, "i", function() if dellID then switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
-bind(hyper, "n", function() hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult) end)
+
+local utils = hs.hotkey.modal.new(hyper, 's', "Utility mode")
+utils:bind(nil, 'a', function() switchAudio() utils:exit() end)
+utils:bind(nil, 'n', function()
+  hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult)
+  utils:exit()
+end)
+utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
 bind({"cmd", "alt"}, "0", function() hs.reload() end)
 
 hs.ipc.cliStatus() -- load IPC for commandline util
-hs.alert.show("Config loaded")
+hs.alert'Config loaded'
