@@ -4,7 +4,6 @@ hs.loadSpoon("Caffeine")
 spoon.Caffeine:start()
 
 -- define constants
--- screens
 local mbpScreen = "Built-in Retina Display"
 local samsungScreen = "S23C570"
 local dellScreen = "DELL U3419W"
@@ -20,12 +19,12 @@ local function myScreens()
   end
 end
 
--- keys
 local hyper = {"ctrl", "alt", "cmd"}
 local bind = hs.hotkey.bind
 
--- applications
 local browsers = {"Google Chrome", "Firefox"}
+
+local hostname = hs.host.localizedName()
 
 -- general geometry definitions
 geos = {
@@ -240,7 +239,7 @@ local function switchAudio()
     end)
   chooser:choices(
     hs.fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end))
-  chooser:placeholderText("Choose audio output:"):rows(0):width(20):show()
+  chooser:placeholderText("Choose audio output:"):rows(1):width(20):show()
 end
 
 local function switchMonitorInput()
@@ -295,8 +294,8 @@ nudge:bind(nil, "down", function () adjust("y", 50) end)
 nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' end)
 
 -- throw bindings
-bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest() end)
-bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast() end)
+bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false, true) end)
+bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true) end)
 bind({"ctrl", "alt"}, "left", function() moveOneSpaceEW("west") end)
 bind({"ctrl", "alt"}, "right", function() moveOneSpaceEW("east") end)
 
@@ -346,6 +345,7 @@ bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() switchAudio() utils:exit() end)
+utils:bind(nil, 'h', function() hs.alert(hostname) utils:exit() end)
 utils:bind(nil, 'n', function()
   hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult)
   utils:exit()
@@ -353,6 +353,8 @@ end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
 bind({"cmd", "alt"}, "0", 'Reload config', function() hs.reload() end)
+
+
 
 hs.hotkey.showHotkeys({"cmd", "alt"}, 'k')
 hs.ipc.cliStatus() -- load IPC for commandline util
