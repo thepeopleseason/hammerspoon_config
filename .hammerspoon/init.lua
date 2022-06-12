@@ -159,22 +159,27 @@ function getWF(app, filter)
   end
 end
 
-local windowChains = {}
-local function winChainIter(t, id)
-  local i, n = windowChains[id] or 0, #t
+local winChains = {}
+local function winChainIter(t, id, dir)
+  if not (type(winChains[id]) == "table" and winChains[id][dir]) then
+    winChains[id] = {}
+    winChains[id][dir] = true
+    winChains[id]["index"] = 0
+  end
+
+  local i, n = winChains[id]["index"], #t
   return function()
     i = i + 1
     if i > n then i = 1 end
-    windowChains[id] = i
+    winChains[id]["index"] = i
     return t[i]
   end
 end
 
 local function chain(t, dir, win)
   local win = win or hs.window.focusedWindow()
-  local iter = winChainIter(t, win:id()..dir)
+  local iter = winChainIter(t, win:id(), dir)
   win:move(iter())
-  print(hs.inspect(windowChains))
 end
 
 local function moveOneSpaceEW(dir)
