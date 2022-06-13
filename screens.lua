@@ -1,24 +1,24 @@
-local screens = {}
+local obj = {}
 
-screens.mbpScreen = "Built-in Retina Display"
-screens.samsungScreen = "S23C570"
-screens.dellScreen = "DELL U3419W"
-screens.miamiScreen = "HP S2031"
+obj.mbpScreen = "Built-in Retina Display"
+obj.samsungScreen = "S23C570"
+obj.dellScreen = "DELL U3419W"
+obj.miamiScreen = "HP S2031"
 
-screens.current = {}
-screens.mc = nil
+obj.current = {}
+obj.mc = nil
 
-function screens.init()
-  if hs.screen(screens.dellScreen) then
-    screens.mc = require("monitor_control")
-    screens.mc.init()
-    screens.current = { hs.screen(screens.dellScreen), hs.screen(screens.samsungScreen) }
-  elseif hs.screen(screens.miamiScreen) then
-    screens.current = { hs.screen(screens.miamiScreen), hs.screen(screens.mbpScreen) }
+function obj.init()
+  if hs.screen(obj.dellScreen) then
+    obj.mc = require("monitor_control")
+    obj.mc.init()
+    obj.current = { hs.screen(obj.dellScreen), hs.screen(obj.samsungScreen) }
+  elseif hs.screen(obj.miamiScreen) then
+    obj.current = { hs.screen(obj.miamiScreen), hs.screen(obj.mbpScreen) }
   else
-    screens.current = { hs.screen(screens.mbpScreen), hs.screen(screens.mbpScreen) }
+    obj.current = { hs.screen(obj.mbpScreen), hs.screen(obj.mbpScreen) }
   end
-  return screens.current, screens.mc
+  return obj.current, obj.mc
 end
 
-return screens
+return obj

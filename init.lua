@@ -56,8 +56,8 @@ layouts = {
     {"Terminal", nil, scn[1], geos["lhalf"], nil, nil},
   },
   home3 = {
-    {"Slack", nil, scn[2], geos["blarge"], nil, nil},
     {"zoom.us", nil, scn[1], geos["l3"], nil, nil},
+    {"Slack", nil, hs.screen("S23C570"), geos["blarge"], nil, nil},
   },
   v2 = {
     {"Slack", nil, scn[2], geos["fs"], nil, nil},
@@ -98,11 +98,11 @@ layouts = {
 
   -- chain sequences (see chain() function below)
   chain = {
-    term = { geos["term"], geos["termr"] },
-    left = { geos["lhalf"], geos["llarge"], geos["l3"] },
-    right = { geos["rhalf"], geos["rlarge"], geos["r3"] },
-    up = { geos["thalf"], geos["tlarge"], geos["t3"] },
-    down = { geos["bhalf"], geos["blarge"], geos["b3"] },
+    term = {geos["term"], geos["termr"]},
+    left = {geos["lhalf"], geos["llarge"], geos["l3"]},
+    right = {geos["rhalf"], geos["rlarge"], geos["r3"]},
+    up = {geos["thalf"], geos["tlarge"], geos["t3"]},
+    down = {geos["bhalf"], geos["blarge"], geos["b3"]},
 
     full_grid = {
       geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
@@ -171,9 +171,6 @@ local function pane(wins)
   end
 end
 
--- testing
-local scnChange = hs.screen.watcher.new(function() hs.reload() hs.alert'Config loaded' end)
-
 -- common modifiers
 local hyper = {"ctrl", "alt", "cmd"}
 local hmain = {"cmd", "alt"}
@@ -238,13 +235,25 @@ bind(hmain, "3", function()
                  {{geos["t3"], scn[2]}})
        hs.layout.apply(layouts["home3"])
      end)
-
-bind(hmain, "h", function() layoutWins(getWF(browsers):getWindows(), layouts["halves"]) end)
-bind(hmain, "4", function() layoutWins(getWF(browsers):getWindows(), layouts["quads"]) end)
 bind(hmain, "9", function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, "9", function() pane(hs.window.focusedWindow():application():allWindows()) end)
 
--- utility bindings
+-- browser organization
+local w3 = hs.hotkey.modal.new(hyper, 'w', "Browser layouts")
+w3:bind(nil, "2", function() layoutWins(getWF(browsers):getWindows(), layouts["halves"])
+           w3.exit() end)
+w3:bind(nil, "3", function() layoutWins(getWF(browsers):getWindows(), layouts["thirds"])
+           w3.exit() end)
+w3:bind(nil, "4", function() layoutWins(getWF(browsers):getWindows(), layouts["quads"])
+           w3.exit() end)
+w3:bind(nil, "5", function() layoutWins(getWF(browsers):getWindows(), layouts["sixths"])
+           w3.exit() end)
+w3:bind(nil, "escape", function() w3:exit() hs.alert'Exit browser layout mode' end)
+
+-- watchers and utilities
+local scnChange = hs.screen.watcher.new(
+  function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
+
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, "i", function() if mc.dellID then mc.switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
@@ -257,9 +266,13 @@ utils:bind(nil, 'n', function()
   hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", u.pingResult)
   utils:exit()
 end)
+utils:bind(nil, "0", function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
-bind(hmain, "0", 'Reload config', function() hs.reload() end)
 
 hs.hotkey.showHotkeys(hmain, 'k')
+
 hs.ipc.cliStatus() -- load IPC for commandline util
+
 hs.alert'Config loaded'
+
+

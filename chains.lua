@@ -1,30 +1,30 @@
 -- chain functions
 -- use the same keybinding to cycle through a sequence of unitrects
 
-local chains = {}
+local obj = {}
 
 -- keep table of windows, operations, and their current indices
-chains.windows = {}
-function chains.winChainIter(t, id, op)
+obj.windows = {}
+function obj.winChainIter(t, id, op)
   -- new operation -> clear and create new tracking table
-  if not (type(chains.windows[id]) == "table" and chains.windows[id][op]) then
-    chains.windows[id] = {}
-    chains.windows[id][op] = true
-    chains.windows[id]["index"] = 0
+  if not (type(obj.windows[id]) == "table" and obj.windows[id][op]) then
+    obj.windows[id] = {}
+    obj.windows[id][op] = true
+    obj.windows[id]["index"] = 0
   end
 
-  local i, n = chains.windows[id]["index"], #t
+  local i, n = obj.windows[id]["index"], #t
   return function()
     i = i % n + 1
-    chains.windows[id]["index"] = i
+    obj.windows[id]["index"] = i
     return t[i]
   end
 end
 
-function chains.chain(t, op, win)
+function obj.chain(t, op, win)
   local win = win or hs.window.focusedWindow()
-  local iter = chains.winChainIter(t, win:id(), op)
+  local iter = obj.winChainIter(t, win:id(), op)
   win:move(iter())
 end
 
-return chains
+return obj

@@ -1,11 +1,11 @@
-local utils = {}
+local obj = {}
 local fnutils = hs.fnutils
 
-function utils.switchAudio()
-  local filter = { "S23C570", "ZoomAudioDevice" }
+function obj.switchAudio()
+  local ignoreFilter = { "S23C570", "ZoomAudioDevice" }
   local choiceList = fnutils.filter(
     hs.audiodevice.allOutputDevices(),
-    function(el) return not fnutils.contains(filter, el:name()) end)
+    function(el) return not fnutils.contains(ignoreFilter, el:name()) end)
 
   local chooser = hs.chooser.new(
     function(choice)
@@ -21,7 +21,7 @@ function utils.switchAudio()
   chooser:placeholderText("Choose audio output:"):rows(1):width(20):show()
 end
 
-function utils.pingResult(object, message, seqnum, error)
+function obj.pingResult(object, message, seqnum, error)
   if message == "didFinish" then
     avg = tonumber(string.match(object:summary(), '/(%d+.%d+)/'))
     if avg == 0.0 then
@@ -36,4 +36,4 @@ function utils.pingResult(object, message, seqnum, error)
   end
 end
 
-return utils
+return obj
