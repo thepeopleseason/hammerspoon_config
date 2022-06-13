@@ -3,24 +3,23 @@ hs.window.animationDuration = 0
 hs.loadSpoon("Caffeine")
 spoon.Caffeine:start()
 
--- define constants
-local mbpScreen = "Built-in Retina Display"
-local samsungScreen = "S23C570"
-local dellScreen = "DELL U3419W"
-local miamiScreen = "HP S2031"
+scn = require("screens")
 
 local function myScreens()
-  if hs.screen(dellScreen) then
-    return { hs.screen(dellScreen), hs.screen(samsungScreen) }
-  elseif hs.screen(miamiScreen) then
-    return { hs.screen(miamiScreen), hs.screen(mbpScreen) }
+  if hs.screen(scn.dellScreen) then
+    mc = require("monitor_control")
+    mc.init()
+    return { hs.screen(scn.dellScreen), hs.screen(scn.samsungScreen) }
+  elseif hs.screen(scn.miamiScreen) then
+    return { hs.screen(scn.miamiScreen), hs.screen(scn.mbpScreen) }
   else
-    return { hs.screen(mbpScreen), hs.screen(mbpScreen) }
+    return { hs.screen(scn.mbpScreen), hs.screen(scn.mbpScreen) }
   end
 end
 
-local hyper = {"ctrl", "alt", "cmd"}
 local bind = hs.hotkey.bind
+local fnutils = hs.fnutils
+local geo = hs.geometry
 
 local browsers = {"Google Chrome", "Firefox"}
 
@@ -28,40 +27,40 @@ local hostname = hs.host.localizedName()
 
 -- general geometry definitions
 geos = {
-  fs = hs.geometry.unitrect(0.0, 0.0, 1.0, 1.0),
-  llarge = hs.geometry.unitrect(0.0, 0.0, 0.66, 1.0),
-  lhalf = hs.geometry.unitrect(0.0, 0.0, 0.5, 1.0),
-  rlarge = hs.geometry.unitrect(0.33, 0.0, 0.66, 1.0),
-  rhalf = hs.geometry.unitrect(0.5, 0.0, 0.5, 1.0),
+  fs = geo.unitrect(0.0, 0.0, 1.0, 1.0),
+  llarge = geo.unitrect(0.0, 0.0, 0.66, 1.0),
+  lhalf = geo.unitrect(0.0, 0.0, 0.5, 1.0),
+  rlarge = geo.unitrect(0.33, 0.0, 0.66, 1.0),
+  rhalf = geo.unitrect(0.5, 0.0, 0.5, 1.0),
 
-  tlarge = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.66),
-  thalf = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.5),
-  blarge = hs.geometry.unitrect(0.0, 0.34, 1.0, 0.67),
-  bhalf = hs.geometry.unitrect(0.0, 0.5, 1.0, 0.5),
+  tlarge = geo.unitrect(0.0, 0.0, 1.0, 0.66),
+  thalf = geo.unitrect(0.0, 0.0, 1.0, 0.5),
+  blarge = geo.unitrect(0.0, 0.34, 1.0, 0.67),
+  bhalf = geo.unitrect(0.0, 0.5, 1.0, 0.5),
 
-  ltq = hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),
-  lbq = hs.geometry.unitrect(0.0, 0.5, 0.5, 0.5),
-  rtq = hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
-  rbq = hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5),
+  ltq = geo.unitrect(0.0, 0.0, 0.5, 0.5),
+  lbq = geo.unitrect(0.0, 0.5, 0.5, 0.5),
+  rtq = geo.unitrect(0.5, 0.0, 0.5, 0.5),
+  rbq = geo.unitrect(0.5, 0.5, 0.5, 0.5),
 
-  l3 = hs.geometry.unitrect(0.0, 0.0, 0.33, 1.0),
-  m3 = hs.geometry.unitrect(0.33, 0.0, 0.33, 1.0),
-  r3 = hs.geometry.unitrect(0.66, 0.0, 0.33, 1.0),
+  l3 = geo.unitrect(0.0, 0.0, 0.33, 1.0),
+  m3 = geo.unitrect(0.33, 0.0, 0.33, 1.0),
+  r3 = geo.unitrect(0.66, 0.0, 0.33, 1.0),
 
-  lt3 = hs.geometry.unitrect(0.0, 0.0, 0.33, 0.5),
-  mt3 = hs.geometry.unitrect(0.33, 0.0, 0.33, 0.5),
-  rt3 = hs.geometry.unitrect(0.66, 0.0, 0.33, 0.5),
+  lt3 = geo.unitrect(0.0, 0.0, 0.33, 0.5),
+  mt3 = geo.unitrect(0.33, 0.0, 0.33, 0.5),
+  rt3 = geo.unitrect(0.66, 0.0, 0.33, 0.5),
 
-  lb3 = hs.geometry.unitrect(0.0, 0.5, 0.33, 0.5),
-  mb3 = hs.geometry.unitrect(0.33, 0.5, 0.33, 0.5),
-  rb3 = hs.geometry.unitrect(0.66, 0.5, 0.33, 0.5),
+  lb3 = geo.unitrect(0.0, 0.5, 0.33, 0.5),
+  mb3 = geo.unitrect(0.33, 0.5, 0.33, 0.5),
+  rb3 = geo.unitrect(0.66, 0.5, 0.33, 0.5),
 
-  t3 = hs.geometry.unitrect(0.0, 0.0, 1.0, 0.33),
-  c3 = hs.geometry.unitrect(0.0, 0.33, 1.0, 0.33),
-  b3 = hs.geometry.unitrect(0.0, 0.66, 1.0, 0.33),
+  t3 = geo.unitrect(0.0, 0.0, 1.0, 0.33),
+  c3 = geo.unitrect(0.0, 0.33, 1.0, 0.33),
+  b3 = geo.unitrect(0.0, 0.66, 1.0, 0.33),
 
-  term = hs.geometry.unitrect(0.0, 0.0, 0.29, 0.99),
-  termr = hs.geometry.unitrect(0.7, 0.0, 0.29, 0.99),
+  term = geo.unitrect(0.0, 0.0, 0.29, 0.99),
+  termr = geo.unitrect(0.7, 0.0, 0.29, 0.99),
 }
 
 -- layouts for use with hs.layout.apply(), layoutApp(), and chain()
@@ -132,17 +131,8 @@ layouts = {
   },
 }
 
--- get current id for dell, if available
-local dellID = nil
-if hs.screen(dellScreen) then
-  hs.task.new(os.getenv("HOME") ..
-    "/.hammerspoon/bin/dell_id",
-    function(exitCode, output, err)
-      dellID = string.gsub(output, "%s", "")
-    end
-  ):start():waitUntilExit()
-end
 
+-- window filter defaults
 function getWF(app, filter)
   local wf=hs.window.filter
   filter = filter or {
@@ -158,7 +148,7 @@ function getWF(app, filter)
   end
 end
 
--- chain bindings: use the same keybinding to cycle through a sequence
+-- chain functions: use the same keybinding to cycle through a sequence
 -- of geometries.
 local winChains = {}
 local function winChainIter(t, id, op)
@@ -188,7 +178,7 @@ local function moveOneSpace(dir)
   local uuid = win:screen():getUUID()
   local spaceID = hs.spaces.activeSpaces()[uuid]
   local screenTable = hs.spaces.allSpaces()[uuid]
-  local cIndex = hs.fnutils.indexOf(screenTable, spaceID)
+  local cIndex = fnutils.indexOf(screenTable, spaceID)
   local nIdx
   if dir == "left" then
     nIdx = cIndex - 1
@@ -226,9 +216,9 @@ end
 
 local function switchAudio()
   local filter = { "S23C570", "ZoomAudioDevice" }
-  local choiceList = hs.fnutils.filter(
+  local choiceList = fnutils.filter(
     hs.audiodevice.allOutputDevices(),
-    function(el) return not hs.fnutils.contains(filter, el:name()) end)
+    function(el) return not fnutils.contains(filter, el:name()) end)
 
   local chooser = hs.chooser.new(
     function(choice)
@@ -240,27 +230,8 @@ local function switchAudio()
       end
     end)
   chooser:choices(
-    hs.fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end))
+    fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end))
   chooser:placeholderText("Choose audio output:"):rows(1):width(20):show()
-end
-
-local function switchMonitorInput()
-  local cInput = "27"
-  local nInput
-
-  hs.task.new(os.getenv("HOME") ..
-    "/.hammerspoon/bin/current_input",
-    function(exitCode, output, err) cInput = string.gsub(output, "%s", "") end
-  ):start():waitUntilExit()
-
-  if cInput == "27" then
-    nInput = "17" -- switch to HDMI 1
-    spoon.Caffeine:setState(true)
-  else
-    nInput = "27" -- switch to USB-C
-    spoon.Caffeine:setState(false)
-  end
-  hs.execute("/usr/local/bin/m1ddc display " .. dellID .. " set input " .. nInput)
 end
 
 function pingResult(object, message, seqnum, error)
@@ -278,6 +249,13 @@ function pingResult(object, message, seqnum, error)
   end
 end
 
+-- testing
+local scnChange = hs.screen.watcher.new(function() hs.reload() hs.alert'Config loaded' end)
+
+-- common modifiers
+local hyper = {"ctrl", "alt", "cmd"}
+local hmain = {"cmd", "alt"}
+
 -- resize bindings
 local resize = hs.hotkey.modal.new(hyper, 'r', "Resize mode")
 resize:bind(nil, "left", function () adjust("w", -20) end)
@@ -285,7 +263,7 @@ resize:bind(nil, "right", function () adjust("w", 20) end)
 resize:bind(nil, "up", function () adjust("h", -20) end)
 resize:bind(nil, "down", function () adjust("h", 20) end)
 resize:bind(nil, 'escape', function() resize:exit() hs.alert'Exited resize mode' end)
-bind({"cmd", "alt"}, "f", function() hs.window.focusedWindow():maximize() end)
+bind(hmain, "f", function() hs.window.focusedWindow():maximize() end)
 
 -- nudge bindings
 local nudge = hs.hotkey.modal.new(hyper, 'n', "Nudge mode")
@@ -302,51 +280,52 @@ bind({"ctrl", "alt"}, "left", function() moveOneSpace("left") end)
 bind({"ctrl", "alt"}, "right", function() moveOneSpace("right") end)
 
 -- chain bindings
-bind({"cmd", "alt"}, "left", function() chain(layouts["chain"]["left"], "l") end)
-bind({"cmd", "alt"}, "right", function() chain(layouts["chain"]["right"], "r") end)
-bind({"cmd", "alt"}, "up", function () chain(layouts["chain"]["up"], "u") end)
-bind({"cmd", "alt"}, "down", function() chain(layouts["chain"]["down"], "d") end)
-bind({"cmd", "alt"}, "t", function() chain(layouts["chain"]["term"], "t") end)
+bind(hmain, "left", function() chain(layouts["chain"]["left"], "l") end)
+bind(hmain, "right", function() chain(layouts["chain"]["right"], "r") end)
+bind(hmain, "up", function () chain(layouts["chain"]["up"], "u") end)
+bind(hmain, "down", function() chain(layouts["chain"]["down"], "d") end)
+bind(hmain, "t", function() chain(layouts["chain"]["term"], "t") end)
 bind({"ctrl", "shift"}, "right", function() chain(layouts["chain"]["full_grid"], "g") end)
 
 -- layout bindings
-bind({"cmd", "alt"}, "q", function()
+bind(hmain, "q", function()
   layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], myScreens()[1]}})
   wins = getWF():rejectApp("zoom.us"):rejectApp("Slack"):getWindows()
   if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], myScreens()[1]}})
   elseif #wins  > 1 then layoutApp(wins, layouts["r3s"])
   end
 end)
-bind({"cmd", "alt"}, "v", function() hs.layout.apply(layouts["v2"]) end)
-bind({"cmd", "alt"}, "m", function()
+bind(hmain, "v", function() hs.layout.apply(layouts["v2"]) end)
+bind(hmain, "m", function()
   hs.layout.apply(layouts["filemgmt"])
   layoutApp(getWF("Finder"):getWindows(),
             {{geos["lt3"], myScreens()[1]}, {geos["lb3"], myScreens()[1]}})
   layoutApp(getWF():rejectApp("Finder"):rejectApp("Slack")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
-bind({"cmd", "alt"}, "1", function() hs.layout.apply(layouts["laptop"]) end)
-bind({"cmd", "alt"}, "2", function() hs.layout.apply(layouts["pcm2"]) end)
-bind({"cmd", "alt"}, "3", function() hs.layout.apply(layouts["home3"])
+bind(hmain, "1", function() hs.layout.apply(layouts["laptop"]) end)
+bind(hmain, "2", function() hs.layout.apply(layouts["pcm2"]) end)
+bind(hmain, "3", function() hs.layout.apply(layouts["home3"])
        layoutApp(getWF("Terminal"):getWindows(),
                  {{geos["term"], myScreens()[1]}, {geos["termr"], myScreens()[1]}})
        layoutApp(getWF(browsers):getWindows(), layouts["halves"])
        layoutApp(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
-                 {{ geos["t3"], myScreens()[2] }})
+                 {{geos["t3"], myScreens()[2]}})
      end)
 
-bind({"cmd", "alt"}, "h", function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
-bind({"cmd", "alt"}, "4", function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
-bind({"cmd", "alt"}, "9", function() pane(getWF(nil,{}):getWindows()) end)
+bind(hmain, "h", function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
+bind(hmain, "4", function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
+bind(hmain, "9", function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, "9", function() pane(hs.window.focusedWindow():application():allWindows()) end)
 
 -- utility bindings
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, "i", function() if dellID then switchMonitorInput() end end)
+bind(hyper, "i", function() if mc.dellID then mc.switchMonitorInput() end end)
 bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() switchAudio() utils:exit() end)
+utils:bind(nil, 'c', function() hs.toggleConsole() utils:exit() end)
 utils:bind(nil, 'h', function() hs.alert(hostname) utils:exit() end)
 utils:bind(nil, 'n', function()
   hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", pingResult)
@@ -354,10 +333,8 @@ utils:bind(nil, 'n', function()
 end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
-bind({"cmd", "alt"}, "0", 'Reload config', function() hs.reload() end)
+bind(hmain, "0", 'Reload config', function() hs.reload() end)
 
-
-
-hs.hotkey.showHotkeys({"cmd", "alt"}, 'k')
+hs.hotkey.showHotkeys(hmain, 'k')
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert'Config loaded'
