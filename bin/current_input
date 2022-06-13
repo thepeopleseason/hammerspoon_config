@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# my home display sometimes will return 0 as the current input with a
+# success status. Run a while loop to poll the input number until it
+# returns an appropriate input code
+#
+# Note: this script assumes one has fewer than 10 displays connected
+# to the computer.
 while true; do
     display_id=`/usr/local/bin/m1ddc display list | grep DELL | cut -c 1`
     str=`/usr/local/bin/m1ddc display $display_id get input`

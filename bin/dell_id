@@ -1,3 +1,5 @@
 #!/bin/bash
 
+# current display is a dell monitor. Update "DELL" to whatever string
+# will suffice.
 /usr/local/bin/m1ddc display list | grep DELL | cut -c 1
