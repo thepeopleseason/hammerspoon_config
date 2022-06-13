@@ -1,111 +1,99 @@
 hs.window.animationDuration = 0
 
-scn = require("screens")
+scn, mc = require("screens").init()
 u = require("utils")
-
-local function myScreens()
-  if hs.screen(scn.dellScreen) then
-    mc = require("monitor_control")
-    mc.init()
-    return { hs.screen(scn.dellScreen), hs.screen(scn.samsungScreen) }
-  elseif hs.screen(scn.miamiScreen) then
-    return { hs.screen(scn.miamiScreen), hs.screen(scn.mbpScreen) }
-  else
-    return { hs.screen(scn.mbpScreen), hs.screen(scn.mbpScreen) }
-  end
-end
+chains = require("chains")
 
 local bind = hs.hotkey.bind
-local geo = hs.geometry
-
 local browsers = {"Google Chrome", "Firefox"}
 
 -- general geometry definitions
+local ur = hs.geometry.unitrect
 geos = {
-  fs = geo.unitrect(0.0, 0.0, 1.0, 1.0),
-  llarge = geo.unitrect(0.0, 0.0, 0.66, 1.0),
-  lhalf = geo.unitrect(0.0, 0.0, 0.5, 1.0),
-  rlarge = geo.unitrect(0.33, 0.0, 0.66, 1.0),
-  rhalf = geo.unitrect(0.5, 0.0, 0.5, 1.0),
+  fs = ur(0.0, 0.0, 1.0, 1.0),
+  llarge = ur(0.0, 0.0, 0.66, 1.0),
+  lhalf = ur(0.0, 0.0, 0.5, 1.0),
+  rlarge = ur(0.33, 0.0, 0.66, 1.0),
+  rhalf = ur(0.5, 0.0, 0.5, 1.0),
 
-  tlarge = geo.unitrect(0.0, 0.0, 1.0, 0.66),
-  thalf = geo.unitrect(0.0, 0.0, 1.0, 0.5),
-  blarge = geo.unitrect(0.0, 0.34, 1.0, 0.67),
-  bhalf = geo.unitrect(0.0, 0.5, 1.0, 0.5),
+  tlarge = ur(0.0, 0.0, 1.0, 0.66),
+  thalf = ur(0.0, 0.0, 1.0, 0.5),
+  blarge = ur(0.0, 0.34, 1.0, 0.67),
+  bhalf = ur(0.0, 0.5, 1.0, 0.5),
 
-  ltq = geo.unitrect(0.0, 0.0, 0.5, 0.5),
-  lbq = geo.unitrect(0.0, 0.5, 0.5, 0.5),
-  rtq = geo.unitrect(0.5, 0.0, 0.5, 0.5),
-  rbq = geo.unitrect(0.5, 0.5, 0.5, 0.5),
+  ltq = ur(0.0, 0.0, 0.5, 0.5),
+  lbq = ur(0.0, 0.5, 0.5, 0.5),
+  rtq = ur(0.5, 0.0, 0.5, 0.5),
+  rbq = ur(0.5, 0.5, 0.5, 0.5),
 
-  l3 = geo.unitrect(0.0, 0.0, 0.33, 1.0),
-  m3 = geo.unitrect(0.33, 0.0, 0.33, 1.0),
-  r3 = geo.unitrect(0.66, 0.0, 0.33, 1.0),
+  l3 = ur(0.0, 0.0, 0.33, 1.0),
+  m3 = ur(0.33, 0.0, 0.33, 1.0),
+  r3 = ur(0.66, 0.0, 0.33, 1.0),
 
-  lt3 = geo.unitrect(0.0, 0.0, 0.33, 0.5),
-  mt3 = geo.unitrect(0.33, 0.0, 0.33, 0.5),
-  rt3 = geo.unitrect(0.66, 0.0, 0.33, 0.5),
+  lt3 = ur(0.0, 0.0, 0.33, 0.5),
+  mt3 = ur(0.33, 0.0, 0.33, 0.5),
+  rt3 = ur(0.66, 0.0, 0.33, 0.5),
 
-  lb3 = geo.unitrect(0.0, 0.5, 0.33, 0.5),
-  mb3 = geo.unitrect(0.33, 0.5, 0.33, 0.5),
-  rb3 = geo.unitrect(0.66, 0.5, 0.33, 0.5),
+  lb3 = ur(0.0, 0.5, 0.33, 0.5),
+  mb3 = ur(0.33, 0.5, 0.33, 0.5),
+  rb3 = ur(0.66, 0.5, 0.33, 0.5),
 
-  t3 = geo.unitrect(0.0, 0.0, 1.0, 0.33),
-  c3 = geo.unitrect(0.0, 0.33, 1.0, 0.33),
-  b3 = geo.unitrect(0.0, 0.66, 1.0, 0.33),
+  t3 = ur(0.0, 0.0, 1.0, 0.33),
+  c3 = ur(0.0, 0.33, 1.0, 0.33),
+  b3 = ur(0.0, 0.66, 1.0, 0.33),
 
-  term = geo.unitrect(0.0, 0.0, 0.29, 0.99),
-  termr = geo.unitrect(0.7, 0.0, 0.29, 0.99),
+  term = ur(0.0, 0.0, 0.29, 0.99),
+  termr = ur(0.7, 0.0, 0.29, 0.99),
 }
 
 -- layouts for use with hs.layout.apply(), layoutApp(), and chain()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
-    {"Slack", nil, myScreens()[1], geos["fs"], nil, nil},
-    {"Google Chrome", nil, myScreens()[1], geos["fs"], nil, nil},
-    {"Firefox", nil, myScreens()[1], geos["fs"], nil, nil},
-    {"Terminal", nil, myScreens()[1], geos["lhalf"], nil, nil},
+    {"Slack", nil, scn[1], geos["fs"], nil, nil},
+    {"Google Chrome", nil, scn[1], geos["fs"], nil, nil},
+    {"Firefox", nil, scn[1], geos["fs"], nil, nil},
+    {"Terminal", nil, scn[1], geos["lhalf"], nil, nil},
   },
   home3 = {
-    {"Slack", nil, myScreens()[2], geos["blarge"], nil, nil},
-    {"zoom.us", nil, myScreens()[1], geos["l3"], nil, nil},
+    {"Slack", nil, scn[2], geos["blarge"], nil, nil},
+    {"zoom.us", nil, scn[1], geos["l3"], nil, nil},
   },
   v2 = {
-    {"Slack", nil, myScreens()[2], geos["fs"], nil, nil},
-    {"Terminal", nil, myScreens()[1], geos["t3"], nil, nil},
+    {"Slack", nil, scn[2], geos["fs"], nil, nil},
+    {"Terminal", nil, scn[1], geos["t3"], nil, nil},
   },
   pcm2 = {
-    {"Slack", nil, myScreens()[2], geos["fs"], nil, nil},
-    {"Terminal", nil, myScreens()[1], geos["r3"], nil, nil},
+    {"Slack", nil, scn[2], geos["fs"], nil, nil},
+    {"Terminal", nil, scn[1], geos["r3"], nil, nil},
   },
   code2 = {
-    {"Slack", nil, myScreens()[2], geos["bhalf"], nil, nil},
-    {"Terminal", nil, myScreens()[1], geos["l3"], nil, nil},
+    {"Slack", nil, scn[2], geos["bhalf"], nil, nil},
+    {"Terminal", nil, scn[1], geos["l3"], nil, nil},
   },
   filemgmt = {
-    {"Terminal", nil, myScreens()[1], geos["m3"], nil, nil},
+    {"Terminal", nil, scn[1], geos["m3"], nil, nil},
   },
 
   -- layoutApp() layouts
   halves = {
-    {geos["lhalf"], myScreens()[1]}, {geos["rhalf"], myScreens()[1]},
+    {geos["lhalf"], scn[1]}, {geos["rhalf"], scn[1]},
   },
   thirds = {
-    {geos["l3"], myScreens()[1]}, {geos["m3"], myScreens()[1]},
-    {geos["r3"], myScreens()[1]},
+    {geos["l3"], scn[1]}, {geos["m3"], scn[1]},
+    {geos["r3"], scn[1]},
   },
   quads = {
-    {geos["ltq"], myScreens()[1]}, {geos["rtq"], myScreens()[1]},
-    {geos["lbq"], myScreens()[1]}, {geos["rbq"], myScreens()[1]},
+    {geos["ltq"], scn[1]}, {geos["rtq"], scn[1]},
+    {geos["lbq"], scn[1]}, {geos["rbq"], scn[1]},
   },
   sixths = {
-    {geos["lt3"], myScreens()[1]}, {geos["mt3"], myScreens()[1]},
-    {geos["rt3"], myScreens()[1]}, {geos["lb3"], myScreens()[1]},
-    {geos["mb3"], myScreens()[1]}, {geos["rb3"], myScreens()[1]},
+    {geos["lt3"], scn[1]}, {geos["mt3"], scn[1]},
+    {geos["rt3"], scn[1]}, {geos["lb3"], scn[1]},
+    {geos["mb3"], scn[1]}, {geos["rb3"], scn[1]},
   },
   r3s = {
-    {geos["m3"], myScreens()[1]}, {geos["r3"], myScreens()[1]},
+    {geos["m3"], scn[1]}, {geos["r3"], scn[1]},
   },
 
   -- chain sequences (see chain() function below)
@@ -140,31 +128,6 @@ function getWF(app, filter)
   else
     return wf.new(false):setDefaultFilter(filter)
   end
-end
-
--- chain functions: use the same keybinding to cycle through a sequence
--- of geometries.
-local winChains = {}
-local function winChainIter(t, id, op)
-  if not (type(winChains[id]) == "table" and winChains[id][op]) then
-    winChains[id] = {}
-    winChains[id][op] = true
-    winChains[id]["index"] = 0
-  end
-
-  local i, n = winChains[id]["index"], #t
-  return function()
-    i = i + 1
-    if i > n then i = 1 end
-    winChains[id]["index"] = i
-    return t[i]
-  end
-end
-
-local function chain(t, op, win)
-  local win = win or hs.window.focusedWindow()
-  local iter = winChainIter(t, win:id(), op)
-  win:move(iter())
 end
 
 local function moveOneSpace(dir)
@@ -232,20 +195,20 @@ local hmain = {"cmd", "alt"}
 
 -- resize modal bindings: hyper-r to enter mode
 local resize = hs.hotkey.modal.new(hyper, 'r', "Resize mode")
-resize:bind(nil, "left", function () adjust("w", -20) end)
-resize:bind(nil, "right", function () adjust("w", 20) end)
-resize:bind(nil, "up", function () adjust("h", -20) end)
-resize:bind(nil, "down", function () adjust("h", 20) end)
+resize:bind(nil, "left", function() adjust("w", -20) end)
+resize:bind(nil, "right", function() adjust("w", 20) end)
+resize:bind(nil, "up", function() adjust("h", -20) end)
+resize:bind(nil, "down", function() adjust("h", 20) end)
 resize:bind(nil, 'escape', function() resize:exit() hs.alert'Exited resize mode' end)
 bind(hmain, "f", function() hs.window.focusedWindow():maximize() end)
 
 -- nudge modal bindings: hyper-n to enter mode
 -- (move windows 50 pixels in a given direction without resizing)
 local nudge = hs.hotkey.modal.new(hyper, 'n', "Nudge mode")
-nudge:bind(nil, "left", function () adjust("x", -50) end)
-nudge:bind(nil, "right", function () adjust("x", 50) end)
-nudge:bind(nil, "up", function () adjust("y", -50) end)
-nudge:bind(nil, "down", function () adjust("y", 50) end)
+nudge:bind(nil, "left", function() adjust("x", -50) end)
+nudge:bind(nil, "right", function() adjust("x", 50) end)
+nudge:bind(nil, "up", function() adjust("y", -50) end)
+nudge:bind(nil, "down", function() adjust("y", 50) end)
 nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' end)
 
 -- throw bindings: move current window one screen to the left/right
@@ -253,11 +216,11 @@ bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true) end)
 
 -- chain bindings: resize current window based on a list of geometries
-bind(hmain, "left", function() chain(layouts["chain"]["left"], "l") end)
-bind(hmain, "right", function() chain(layouts["chain"]["right"], "r") end)
-bind(hmain, "up", function () chain(layouts["chain"]["up"], "u") end)
-bind(hmain, "down", function() chain(layouts["chain"]["down"], "d") end)
-bind(hmain, "t", function() chain(layouts["chain"]["term"], "t") end)
+bind(hmain, "left", function() chains.chain(layouts["chain"]["left"], "l") end)
+bind(hmain, "right", function() chains.chain(layouts["chain"]["right"], "r") end)
+bind(hmain, "up", function() chains.chain(layouts["chain"]["up"], "u") end)
+bind(hmain, "down", function() chains.chain(layouts["chain"]["down"], "d") end)
+bind(hmain, "t", function() chains.chain(layouts["chain"]["term"], "t") end)
 
 -- other bindings
 bind({"ctrl", "shift"}, "left", function() moveOneSpace("left") end)
@@ -266,9 +229,9 @@ bind({"ctrl", "shift"}, "up", function() chain(layouts["chain"]["full_grid"], "g
 
 -- functional layout bindings
 bind(hmain, "q", function()
-  layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], myScreens()[1]}})
+  layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], scn[1]}})
   wins = getWF():rejectApp("zoom.us"):getWindows()
-  if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], myScreens()[1]}})
+  if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], scn[1]}})
   elseif #wins  > 1 then layoutApp(wins, layouts["r3s"])
   end
 end)
@@ -276,18 +239,19 @@ bind(hmain, "v", function() hs.layout.apply(layouts["v2"]) end)
 bind(hmain, "m", function()
   hs.layout.apply(layouts["filemgmt"])
   layoutApp(getWF("Finder"):getWindows(),
-            {{geos["lt3"], myScreens()[1]}, {geos["lb3"], myScreens()[1]}})
+            {{geos["lt3"], scn[1]}, {geos["lb3"], scn[1]}})
   layoutApp(getWF():rejectApp("Finder")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
 bind(hmain, "1", function() hs.layout.apply(layouts["laptop"]) end)
 bind(hmain, "2", function() hs.layout.apply(layouts["pcm2"]) end)
-bind(hmain, "3", function() hs.layout.apply(layouts["home3"])
+bind(hmain, "3", function()
        layoutApp(getWF("Terminal"):getWindows(),
-                 {{geos["term"], myScreens()[1]}, {geos["termr"], myScreens()[1]}})
+                 {{geos["term"], scn[1]}, {geos["termr"], scn[1]}})
        layoutApp(getWF(browsers):getWindows(), layouts["halves"])
        layoutApp(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
-                 {{geos["t3"], myScreens()[2]}})
+                 {{geos["t3"], scn[2]}})
+       hs.layout.apply(layouts["home3"])
      end)
 
 bind(hmain, "h", function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
