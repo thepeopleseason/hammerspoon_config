@@ -46,7 +46,7 @@ geos = {
   termr = ur(0.7, 0.0, 0.29, 0.99),
 }
 
--- layouts for use with hs.layout.apply(), layoutApp(), and chain()
+-- layouts for use with hs.layout.apply(), layoutWins(), and chains.chain()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
@@ -75,7 +75,7 @@ layouts = {
     {"Terminal", nil, scn[1], geos["m3"], nil, nil},
   },
 
-  -- layoutApp() layouts
+  -- layoutWins() layouts
   halves = {
     {geos["lhalf"], scn[1]}, {geos["rhalf"], scn[1]},
   },
@@ -147,7 +147,7 @@ local function moveOneSpace(dir)
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
 end
 
-local function layoutApp(wins, layout)
+local function layoutWins(wins, layout)
   for i, win in ipairs(wins) do
     local layout_index = i
     if layout_index > #layout then layout_index = #layout end
@@ -164,10 +164,10 @@ local function adjust(dim, amt)
 end
 
 local function pane(wins)
-  if     #wins == 2 then layoutApp(wins, layouts["halves"])
-  elseif #wins == 3 then layoutApp(wins, layouts["thirds"])
-  elseif #wins == 4 then layoutApp(wins, layouts["quads"])
-  elseif #wins >= 5 then layoutApp(wins, layouts["sixths"])
+  if     #wins == 2 then layoutWins(wins, layouts["halves"])
+  elseif #wins == 3 then layoutWins(wins, layouts["thirds"])
+  elseif #wins == 4 then layoutWins(wins, layouts["quads"])
+  elseif #wins >= 5 then layoutWins(wins, layouts["sixths"])
   end
 end
 
@@ -214,33 +214,33 @@ bind({"ctrl", "shift"}, "up", function() chain(layouts["chain"]["full_grid"], "g
 
 -- functional layout bindings
 bind(hmain, "q", function()
-  layoutApp(getWF("zoom.us"):getWindows(), {{geos["l3"], scn[1]}})
+  layoutWins(getWF("zoom.us"):getWindows(), {{geos["l3"], scn[1]}})
   wins = getWF():rejectApp("zoom.us"):getWindows()
-  if     #wins == 1 then layoutApp(wins, {{geos["rlarge"], scn[1]}})
-  elseif #wins  > 1 then layoutApp(wins, layouts["r3s"])
+  if     #wins == 1 then layoutWins(wins, {{geos["rlarge"], scn[1]}})
+  elseif #wins  > 1 then layoutWins(wins, layouts["r3s"])
   end
 end)
 bind(hmain, "v", function() hs.layout.apply(layouts["v2"]) end)
 bind(hmain, "m", function()
   hs.layout.apply(layouts["filemgmt"])
-  layoutApp(getWF("Finder"):getWindows(),
+  layoutWins(getWF("Finder"):getWindows(),
             {{geos["lt3"], scn[1]}, {geos["lb3"], scn[1]}})
-  layoutApp(getWF():rejectApp("Finder")
+  layoutWins(getWF():rejectApp("Finder")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
 bind(hmain, "1", function() hs.layout.apply(layouts["laptop"]) end)
 bind(hmain, "2", function() hs.layout.apply(layouts["pcm2"]) end)
 bind(hmain, "3", function()
-       layoutApp(getWF("Terminal"):getWindows(),
+       layoutWins(getWF("Terminal"):getWindows(),
                  {{geos["term"], scn[1]}, {geos["termr"], scn[1]}})
-       layoutApp(getWF(browsers):getWindows(), layouts["halves"])
-       layoutApp(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
+       layoutWins(getWF(browsers):getWindows(), layouts["halves"])
+       layoutWins(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
                  {{geos["t3"], scn[2]}})
        hs.layout.apply(layouts["home3"])
      end)
 
-bind(hmain, "h", function() layoutApp(getWF(browsers):getWindows(), layouts["halves"]) end)
-bind(hmain, "4", function() layoutApp(getWF(browsers):getWindows(), layouts["quads"]) end)
+bind(hmain, "h", function() layoutWins(getWF(browsers):getWindows(), layouts["halves"]) end)
+bind(hmain, "4", function() layoutWins(getWF(browsers):getWindows(), layouts["quads"]) end)
 bind(hmain, "9", function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, "9", function() pane(hs.window.focusedWindow():application():allWindows()) end)
 
