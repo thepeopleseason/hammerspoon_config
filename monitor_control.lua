@@ -5,14 +5,14 @@ local mc = {}
 
 mc.dellID = nil
 
-function mc:init()
+function mc.init()
   hs.task.new(
     os.getenv("HOME") .. "/.hammerspoon/bin/dell_id",
     function(exitCode, output, err) mc.dellID = string.gsub(output, "%s", "") end
   ):start():waitUntilExit()
 end
 
-function mc:switchMonitorInput()
+function mc.switchMonitorInput()
   local cInput = "27"
   local nInput
 
