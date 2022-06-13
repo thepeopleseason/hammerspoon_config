@@ -135,8 +135,8 @@ layouts = {
 -- get current id for dell, if available
 local dellID = nil
 if hs.screen(dellScreen) then
-  hs.task.new(
-    "/Users/jhsiao/devel/dotfiles/bin/dell_id",
+  hs.task.new(os.getenv("HOME") ..
+    "/.hammerspoon/bin/dell_id",
     function(exitCode, output, err)
       dellID = string.gsub(output, "%s", "")
     end
@@ -246,8 +246,8 @@ local function switchMonitorInput()
   local cInput = "27"
   local nInput
 
-  hs.task.new(
-    "/Users/jhsiao/devel/dotfiles/bin/current_input",
+  hs.task.new(os.getenv("HOME") ..
+    "/.hammerspoon/bin/current_input",
     function(exitCode, output, err) cInput = string.gsub(output, "%s", "") end
   ):start():waitUntilExit()
 
