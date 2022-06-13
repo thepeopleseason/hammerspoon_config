@@ -158,11 +158,13 @@ function getWF(app, filter)
   end
 end
 
+-- chain bindings: use the same keybinding to cycle through a sequence
+-- of geometries.
 local winChains = {}
-local function winChainIter(t, id, dir)
-  if not (type(winChains[id]) == "table" and winChains[id][dir]) then
+local function winChainIter(t, id, op)
+  if not (type(winChains[id]) == "table" and winChains[id][op]) then
     winChains[id] = {}
-    winChains[id][dir] = true
+    winChains[id][op] = true
     winChains[id]["index"] = 0
   end
 
@@ -175,23 +177,23 @@ local function winChainIter(t, id, dir)
   end
 end
 
-local function chain(t, dir, win)
+local function chain(t, op, win)
   local win = win or hs.window.focusedWindow()
-  local iter = winChainIter(t, win:id(), dir)
+  local iter = winChainIter(t, win:id(), op)
   win:move(iter())
 end
 
-local function moveOneSpaceEW(dir)
+local function moveOneSpace(dir)
   local win = hs.window.focusedWindow()
   local uuid = win:screen():getUUID()
   local spaceID = hs.spaces.activeSpaces()[uuid]
   local screenTable = hs.spaces.allSpaces()[uuid]
   local cIndex = hs.fnutils.indexOf(screenTable, spaceID)
   local nIdx
-  if dir == "west" then
+  if dir == "left" then
     nIdx = cIndex - 1
     if nIdx < 1 then nIdx = 1 end
-  elseif dir == "east" then
+  elseif dir == "right" then
     nIdx = cIndex + 1
     if nIdx > #screenTable then nIdx = #screenTable end
   end
@@ -296,8 +298,8 @@ nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' en
 -- throw bindings
 bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false, true) end)
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true) end)
-bind({"ctrl", "alt"}, "left", function() moveOneSpaceEW("west") end)
-bind({"ctrl", "alt"}, "right", function() moveOneSpaceEW("east") end)
+bind({"ctrl", "alt"}, "left", function() moveOneSpace("left") end)
+bind({"ctrl", "alt"}, "right", function() moveOneSpace("right") end)
 
 -- chain bindings
 bind({"cmd", "alt"}, "left", function() chain(layouts["chain"]["left"], "l") end)
