@@ -1,8 +1,5 @@
 hs.window.animationDuration = 0
 
-hs.loadSpoon("Caffeine")
-spoon.Caffeine:start()
-
 scn = require("screens")
 
 local function myScreens()

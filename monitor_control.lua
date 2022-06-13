@@ -1,3 +1,6 @@
+hs.loadSpoon("Caffeine")
+spoon.Caffeine:start()
+
 local mc = {}
 
 mc.dellID = nil
