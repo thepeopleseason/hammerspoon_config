@@ -1,0 +1,2 @@
+# hammerspoon
+My Hammerspoon Config
