@@ -8,7 +8,7 @@ screens.miamiScreen = "HP S2031"
 screens.current = {}
 screens.mc = nil
 
-function screens:init()
+function screens.init()
   if hs.screen(screens.dellScreen) then
     screens.mc = require("monitor_control")
     screens.mc.init()

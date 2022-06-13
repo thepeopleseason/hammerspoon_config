@@ -23,7 +23,6 @@ end
 
 function chains.chain(t, op, win)
   local win = win or hs.window.focusedWindow()
-  print(t, op, win:id())
   local iter = chains.winChainIter(t, win:id(), op)
   win:move(iter())
 end
