@@ -1,8 +1,10 @@
 local obj = {}
 local fnutils = hs.fnutils
 
-function obj.switchAudio()
+function obj.switchAudio(filter)
   local ignoreFilter = { "S23C570", "ZoomAudioDevice" }
+  if filter then ignoreFilter = hs.fnutils.concat(ignoreFilter, filter) end
+
   local choiceList = fnutils.filter(
     hs.audiodevice.allOutputDevices(),
     function(el) return not fnutils.contains(ignoreFilter, el:name()) end)
