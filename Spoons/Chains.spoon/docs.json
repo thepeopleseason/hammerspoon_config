@@ -1,0 +1,89 @@
+[
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "desc" : "Use a single keybinding repeated to resize a window differently in sequence",
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "Constructor" : [
+
+    ],
+    "doc" : "Use a single keybinding repeated to resize a window differently in sequence\n\nInspired by the `chain` function of [Slate](https:\/\/github.com\/jigish\/slate)\n\nExample usage:\n```\nhs.hotkey.bind({\"cmd\",\"alt\"}, \"up\",\n  function() Chains.chain({ hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),\n                            hs.geometry.unitrect(0.0, 0.5, 0.5, 0.5),\n                            hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),\n                            hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5) }, \"quads\")\nend)\n```",
+    "items" : [
+      {
+        "doc" : "Move the focused window in sequence through a list of unitrect tables\n\nParameters\n* rectTable - a table consisting of individual unitrects in a sequence\n* operation - a string to uniquely identify the operation\n\nReturns:\n* None",
+        "stripped_doc" : [
+          "Move the focused window in sequence through a list of unitrect tables",
+          "",
+          "Parameters",
+          "* rectTable - a table consisting of individual unitrects in a sequence",
+          "* operation - a string to uniquely identify the operation",
+          ""
+        ],
+        "def" : "Chains:chain()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "Chains:chain()",
+        "type" : "Method",
+        "returns" : [
+          "* None"
+        ],
+        "desc" : "Move the focused window in sequence through a list of unitrect tables",
+        "name" : "chain"
+      }
+    ],
+    "Method" : [
+      {
+        "doc" : "Move the focused window in sequence through a list of unitrect tables\n\nParameters\n* rectTable - a table consisting of individual unitrects in a sequence\n* operation - a string to uniquely identify the operation\n\nReturns:\n* None",
+        "stripped_doc" : [
+          "Move the focused window in sequence through a list of unitrect tables",
+          "",
+          "Parameters",
+          "* rectTable - a table consisting of individual unitrects in a sequence",
+          "* operation - a string to uniquely identify the operation",
+          ""
+        ],
+        "def" : "Chains:chain()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "Chains:chain()",
+        "type" : "Method",
+        "returns" : [
+          "* None"
+        ],
+        "desc" : "Move the focused window in sequence through a list of unitrect tables",
+        "name" : "chain"
+      }
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "name" : "Chains"
+  }
+]

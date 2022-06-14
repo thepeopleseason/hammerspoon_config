@@ -1,8 +1,9 @@
 hs.window.animationDuration = 0
+hs.loadSpoon("Chains")
 
 scn = require("screens").init()
 u = require("utils")
-chains = require("chains")
+chains = spoon.Chains
 
 local bind = hs.hotkey.bind
 local browsers = {"Google Chrome", "Firefox"}

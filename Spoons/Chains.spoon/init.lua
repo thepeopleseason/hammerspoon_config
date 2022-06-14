@@ -20,6 +20,7 @@ local obj = {}
 obj.name = "Chains"
 obj.version = "1.0"
 obj.author = "James Hsiao <matchstick@gmail.com>"
+obj.license = "MIT - https://opensource.org/licenses/MIT"
 
 obj.windows = {}  -- a table of windows, current ops, and indices
 
