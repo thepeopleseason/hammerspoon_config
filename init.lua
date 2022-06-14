@@ -97,7 +97,7 @@ layouts = {
     {geos["m3"], scn.screens[1]}, {geos["r3"], scn.screens[1]},
   },
 
-  -- chain sequences (see chain() function below)
+  -- chain sequences (see Chains.spoon)
   chain = {
     term = {geos["term"], geos["termr"]},
     left = {geos["lhalf"], geos["llarge"], geos["l3"]},
@@ -208,7 +208,7 @@ bind(hmain, "t", function() chains:chain(layouts["chain"]["term"], "t") end)
 -- other bindings
 bind({"ctrl", "shift"}, "left", function() moveOneSpace("left") end)
 bind({"ctrl", "shift"}, "right", function() moveOneSpace("right") end)
-bind({"ctrl", "shift"}, "up", function() chain(layouts["chain"]["full_grid"], "g") end)
+bind({"ctrl", "shift"}, "up", function() chains:chain(layouts["chain"]["full_grid"], "g") end)
 
 -- functional layout bindings
 bind(hmain, "q", function()
