@@ -1,12 +1,31 @@
--- chain functions
--- use the same keybinding to cycle through a sequence of unitrects
+--- === Chains ===
+---
+--- Use a single keybinding repeated to resize a window differently in sequence
+---
+--- Inspired by the `chain` function of [Slate](https://github.com/jigish/slate)
+---
+--- Example usage:
+--- ```
+--- hs.hotkey.bind({"cmd","alt"}, "up",
+---   function() Chains.chain({ hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),
+---                             hs.geometry.unitrect(0.0, 0.5, 0.5, 0.5),
+---                             hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
+---                             hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5) }, "quads")
+--- end)
+--- ```
 
 local obj = {}
 
--- keep table of windows, operations, and their current indices
-obj.windows = {}
-function obj.winChainIter(t, id, op)
-  -- new operation -> clear and create new tracking table
+-- Metadata
+obj.name = "Chains"
+obj.version = "1.0"
+obj.author = "James Hsiao <matchstick@gmail.com>"
+
+obj.windows = {}  -- a table of windows, current ops, and indices
+
+-- Internal iterator function to track
+local function _chainIterator(t, id, op)
+  -- for any new operation -> clear and create new tracking table
   if not (type(obj.windows[id]) == "table" and obj.windows[id][op]) then
     obj.windows[id] = {}
     obj.windows[id][op] = true
@@ -21,9 +40,19 @@ function obj.winChainIter(t, id, op)
   end
 end
 
-function obj.chain(t, op, win)
-  local win = win or hs.window.focusedWindow()
-  local iter = obj.winChainIter(t, win:id(), op)
+--- Chains:chain()
+--- Method
+--- Move the focused window in sequence through a list of unitrect tables
+---
+--- Parameters
+--- * rectTable - a table consisting of individual unitrects in a sequence
+--- * operation - a string to uniquely identify the operation
+---
+--- Returns:
+--- * None
+function obj:chain(rectTable, operation)
+  local win = hs.window.focusedWindow()
+  local iter = _chainIterator(rectTable, win:id(), operation)
   win:move(iter())
 end
 

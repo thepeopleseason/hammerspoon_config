@@ -46,7 +46,7 @@ geos = {
   termr = ur(0.7, 0.0, 0.29, 0.99),
 }
 
--- layouts for use with hs.layout.apply(), layoutWins(), and chains.chain()
+-- layouts for use with hs.layout.apply(), layoutWins(), and chains:chain()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
@@ -198,11 +198,11 @@ bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true) end)
 
 -- chain bindings: resize current window based on a list of geometries
-bind(hmain, "left", function() chains.chain(layouts["chain"]["left"], "l") end)
-bind(hmain, "right", function() chains.chain(layouts["chain"]["right"], "r") end)
-bind(hmain, "up", function() chains.chain(layouts["chain"]["up"], "u") end)
-bind(hmain, "down", function() chains.chain(layouts["chain"]["down"], "d") end)
-bind(hmain, "t", function() chains.chain(layouts["chain"]["term"], "t") end)
+bind(hmain, "left", function() chains:chain(layouts["chain"]["left"], "l") end)
+bind(hmain, "right", function() chains:chain(layouts["chain"]["right"], "r") end)
+bind(hmain, "up", function() chains:chain(layouts["chain"]["up"], "u") end)
+bind(hmain, "down", function() chains:chain(layouts["chain"]["down"], "d") end)
+bind(hmain, "t", function() chains:chain(layouts["chain"]["term"], "t") end)
 
 -- other bindings
 bind({"ctrl", "shift"}, "left", function() moveOneSpace("left") end)
