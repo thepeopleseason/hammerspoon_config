@@ -2,7 +2,7 @@ local obj = {}
 local fnutils = hs.fnutils
 
 function obj.switchAudio(filter)
-  local ignoreFilter = filter or { "S23C570", "ZoomAudioDevice" }
+  local ignoreFilter = filter or {"ZoomAudioDevice"}
 
   -- filter out MBP speakers if in clamshell mode
   if not hs.screen.findByName("Built-in Retina Display") then
@@ -24,7 +24,8 @@ function obj.switchAudio(filter)
     end)
   chooser:choices(
     fnutils.map(choiceList, function(el) return { ["text"] = el:name() } end))
-  chooser:placeholderText("Choose audio output:"):rows(1):width(20):show()
+  chooser:placeholderText("Choose audio output:")
+  chooser:bgDark(true):rows(1):width(30):show()
 end
 
 function obj.pingResult(object, message, seqnum, error)
