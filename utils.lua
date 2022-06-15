@@ -2,8 +2,12 @@ local obj = {}
 local fnutils = hs.fnutils
 
 function obj.switchAudio(filter)
-  local ignoreFilter = { "S23C570", "ZoomAudioDevice" }
-  if filter then ignoreFilter = hs.fnutils.concat(ignoreFilter, filter) end
+  local ignoreFilter = filter or { "S23C570", "ZoomAudioDevice" }
+
+  -- filter out MBP speakers if in clamshell mode
+  if not hs.screen.findByName("Built-in Retina Display") then
+    table.insert(ignoreFilter, "MacBook Pro Speakers")
+  end
 
   local choiceList = fnutils.filter(
     hs.audiodevice.allOutputDevices(),
