@@ -2,7 +2,9 @@
 ---
 --- Use a single keybinding repeated to resize a window differently in sequence
 ---
---- Inspired by the `chain` function of [Slate](https://github.com/jigish/slate)
+--- Inspired by the default keybindings in
+--- [Spectacle](https://github.com/eczarny/spectacle) and the
+--- `chain` function of [Slate](https://github.com/jigish/slate)
 ---
 --- Example usage:
 --- ```
