@@ -54,7 +54,7 @@ end
 function obj:chain(rectTable, operation)
   local win = hs.window.focusedWindow()
   local iter = _chainIterator(rectTable, win:id(), operation)
-  win:move(iter())
+  win:move(iter()):focus()
 end
 
 return obj
