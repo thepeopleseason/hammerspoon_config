@@ -195,8 +195,8 @@ nudge:bind(nil, "down", function() adjust("y", 50) end)
 nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' end)
 
 -- throw bindings: move current window one screen to the left/right
-bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false, true) end)
-bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true) end)
+bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false, true):focus() end)
+bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true):focus() end)
 
 -- chain bindings: resize current window based on a list of geometries
 bind(hmain, "left", function() chains:chain(layouts["chain"]["left"], "l") end)
