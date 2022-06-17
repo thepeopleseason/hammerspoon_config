@@ -18,6 +18,23 @@ function openSpotify(url)
   t:start()
 end
 
+function cleanURL(url)
+  filter = { "utm_", "uta_", "fbclid", "gclid" }
+  local path, qstring = table.unpack(hs.fnutils.split(url, "?"), 1, 2)
+  newqstring = hs.fnutils.map(
+    hs.fnutils.split(qstring, "&"), function(el)
+      if not hs.fnutils.some(filter,
+                         function(fel) if string.match(el, fel) then return true end end) then
+        return el
+      end
+    end
+  )
+  if #newqstring == 0 then
+    return path
+  else
+    return path .. "?" .. table.concat(newqstring, "&")
+  end
+end
 
 function handleHTTP(scheme, host, params, url, sender)
   local mailchimp = {
@@ -32,6 +49,7 @@ function handleHTTP(scheme, host, params, url, sender)
     paths = { "intuit" }
   }
 
+  url = cleanURL(url)
   if string.match(host, "open.spotify.com") then
     openSpotify(url)
     return true
