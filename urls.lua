@@ -55,6 +55,11 @@ function handleHTTP(scheme, host, params, url, sender)
     return true
   end
 
+  if string.match(url, "zoom.us/j") then
+    hs.urlevent.openURLWithBundle(url, "us.zoom.xos")
+    return true
+  end
+
   if hs.eventtap.checkKeyboardModifiers()["cmd"] or
     hs.fnutils.some(mailchimp["hosts"], function(el)
                       if string.match(host, el) then return true end end)
