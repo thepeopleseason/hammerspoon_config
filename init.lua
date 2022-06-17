@@ -1,6 +1,8 @@
 hs.window.animationDuration = 0
 hs.loadSpoon("Chains")
 
+private = require("private")
+
 scn = require("screens").init()
 u = require("utils")
 url = require("urls")
@@ -59,7 +61,7 @@ layouts = {
   },
   home3 = {
     {"zoom.us", nil, scn.screens[1], geos["l3"], nil, nil},
-    {"Slack", nil, hs.screen("S23C570"), geos["blarge"], nil, nil},
+    {"Slack", nil, scn.screens[2], geos["blarge"], nil, nil},
   },
   v2 = {
     {"Slack", nil, scn.screens[2], geos["fs"], nil, nil},
@@ -258,7 +260,7 @@ local scnChange = hs.screen.watcher.new(
 
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, "i", function() if scn.mainDdcID then scn.switchMonitorInput() end end)
-bind(hyper, "p", function() hs.application.launchOrFocus("PingID") end)
+bind(hyper, "p", function() hs.application.launchOrFocus(private.p_app) end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() u.switchAudio() utils:exit() end)

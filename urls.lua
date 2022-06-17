@@ -37,16 +37,6 @@ function cleanURL(url)
 end
 
 function handleHTTP(scheme, host, params, url, sender)
-  local mailchimp = {
-    pf = "Profile 2",
-    matches = { "rsglab", "mailchimp", "mcpeeps", "meet.google.com" },
-  }
-  local intuit = {
-    pf = "Profile 3",
-    matches = { "intuit", "alight.com", "perksatwork.com", "degreed.com",
-                "www.concursolutions.com", "align.ustream.tv", "outlook.office365.com" },
-  }
-
   -- remove tracking and other unwanted URL cruft
   if string.match(url, "?") then url = cleanURL(url) end
 
@@ -62,22 +52,20 @@ function handleHTTP(scheme, host, params, url, sender)
     return true
   end
 
-  -- Mailchimp
   if hs.eventtap.checkKeyboardModifiers()["cmd"] or
-    hs.fnutils.some(mailchimp["matches"], function(el)
+    hs.fnutils.some(private.urlconf["mc"]["matches"], function(el)
                       if string.match(url, el) then return true end end)
   then
-    openChromeWithProfile(mailchimp["pf"], url)
+    openChromeWithProfile(private.urlconf["mc"]["pf"], url)
     return true
   end
 
-  -- Intuit
   if hs.eventtap.checkKeyboardModifiers()["shift"] or
-    hs.fnutils.some(intuit["matches"],
+    hs.fnutils.some(private.urlconf["int"]["matches"],
                     function(el)
                       if string.match(url, el) then return true end end)
   then
-    openChromeWithProfile(intuit["pf"], url)
+    openChromeWithProfile(private.urlconf["int"]["pf"], url)
     return true
   end
 
