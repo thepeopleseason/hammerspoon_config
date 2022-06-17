@@ -53,7 +53,7 @@ end
 ---
 --- Returns:
 --- * None
-function obj:chain(rectTable, operation)
+function obj:link(rectTable, operation)
   local win = hs.window.focusedWindow()
   local iter = _chainIterator(rectTable, win:id(), operation)
   win:move(iter()):focus()

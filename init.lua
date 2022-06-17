@@ -1,12 +1,13 @@
 hs.window.animationDuration = 0
 hs.loadSpoon("Chains")
 
+-- private details untracked in github
 private = require("private")
 
 scn = require("screens").init()
 u = require("utils")
 url = require("urls")
-chains = spoon.Chains
+chain = spoon.Chains
 
 local bind = hs.hotkey.bind
 local browsers = {"Google Chrome", "Firefox"}
@@ -50,7 +51,7 @@ geos = {
   termr = ur(0.7, 0.0, 0.29, 0.99),
 }
 
--- layouts for use with hs.layout.apply(), layoutWins(), and chains:chain()
+-- layouts for use with hs.layout.apply(), layoutWins(), and chain:link()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
@@ -202,16 +203,16 @@ bind(hyper, "left", function() hs.window.focusedWindow():moveOneScreenWest(false
 bind(hyper, "right", function() hs.window.focusedWindow():moveOneScreenEast(false, true):focus() end)
 
 -- chain bindings: resize current window based on a list of geometries
-bind(hmain, "left", function() chains:chain(layouts["chain"]["left"], "l") end)
-bind(hmain, "right", function() chains:chain(layouts["chain"]["right"], "r") end)
-bind(hmain, "up", function() chains:chain(layouts["chain"]["up"], "u") end)
-bind(hmain, "down", function() chains:chain(layouts["chain"]["down"], "d") end)
-bind(hmain, "t", function() chains:chain(layouts["chain"]["term"], "t") end)
+bind(hmain, "left", function() chain:link(layouts["chain"]["left"], "l") end)
+bind(hmain, "right", function() chain:link(layouts["chain"]["right"], "r") end)
+bind(hmain, "up", function() chain:link(layouts["chain"]["up"], "u") end)
+bind(hmain, "down", function() chain:link(layouts["chain"]["down"], "d") end)
+bind(hmain, "t", function() chain:link(layouts["chain"]["term"], "t") end)
 
 -- other bindings
 bind({"ctrl", "shift"}, "left", function() moveOneSpace("left") end)
 bind({"ctrl", "shift"}, "right", function() moveOneSpace("right") end)
-bind({"ctrl", "shift"}, "up", function() chains:chain(layouts["chain"]["full_grid"], "g") end)
+bind({"ctrl", "shift"}, "up", function() chain:link(layouts["chain"]["full_grid"], "g") end)
 
 -- functional layout bindings
 bind(hmain, "q", function()
