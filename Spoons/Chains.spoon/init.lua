@@ -9,10 +9,10 @@
 --- Example usage:
 --- ```
 --- hs.hotkey.bind({"cmd","alt"}, "up",
----   function() Chains.chain({ hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),
----                             hs.geometry.unitrect(0.0, 0.5, 0.5, 0.5),
----                             hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
----                             hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5) }, "quads")
+---   function() Chains.link({ hs.geometry.unitrect(0.0, 0.0, 0.5, 0.5),
+---                            hs.geometry.unitrect(0.0, 0.5, 0.5, 0.5),
+---                            hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
+---                            hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5) }, "quads")
 --- end)
 --- ```
 
