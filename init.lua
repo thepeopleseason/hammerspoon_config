@@ -3,6 +3,7 @@ hs.loadSpoon("Chains")
 
 scn = require("screens").init()
 u = require("utils")
+url = require("urls")
 chains = spoon.Chains
 
 local bind = hs.hotkey.bind
