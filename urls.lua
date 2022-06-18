@@ -18,6 +18,7 @@ function openSpotify(url)
   t:start()
 end
 
+-- clean URL cruft
 function cleanURL(url)
   filter = { "utm_", "uta_", "fbclid", "gclid" }
   local path, qstring = table.unpack(hs.fnutils.split(url, "?"), 1, 2)
