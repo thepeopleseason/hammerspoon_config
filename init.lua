@@ -260,13 +260,17 @@ local scnChange = hs.screen.watcher.new(
   function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
 
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, "i", function() if scn.mainDdcID then scn.switchMonitorInput() end end)
+bind(hyper, "i", function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
 bind(hyper, "p", function() hs.application.launchOrFocus(private.p_app) end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() u.switchAudio() utils:exit() end)
 utils:bind(nil, 'c', function() hs.toggleConsole() utils:exit() end)
 utils:bind(nil, 'h', function() hs.alert(hs.host.localizedName()) utils:exit() end)
+utils:bind(nil, "i", function()
+  if scn.mainDdcID then scn.switchMonitorInput(false) end
+  utils:exit()
+end)
 utils:bind(nil, 'n', function()
   hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", u.pingResult)
   utils:exit()

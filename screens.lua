@@ -27,7 +27,7 @@ function obj.init()
   return obj
 end
 
-function obj.switchMonitorInput()
+function obj.switchMonitorInput(caffeinate)
   local cInput = "27"
   local nInput
 
@@ -38,10 +38,10 @@ function obj.switchMonitorInput()
 
   if cInput == "27" then
     nInput = "17" -- switch to HDMI 1
-    spoon.Caffeine:setState(true)
+    if caffeinate then spoon.Caffeine:setState(true) end
   else
     nInput = "27" -- switch to USB-C
-    spoon.Caffeine:setState(false)
+    if caffeinate then spoon.Caffeine:setState(false) end
   end
   hs.execute("/usr/local/bin/m1ddc display " .. obj.mainDdcID .. " set input " .. nInput)
 end
