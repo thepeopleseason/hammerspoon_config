@@ -18,7 +18,7 @@ geos = {
   fs = ur(0.0, 0.0, 1.0, 1.0),
   llarge = ur(0.0, 0.0, 0.66, 1.0),
   lhalf = ur(0.0, 0.0, 0.5, 1.0),
-  rlarge = ur(0.33, 0.0, 0.66, 1.0),
+  rlarge = ur(0.34, 0.0, 0.66, 1.0),
   rhalf = ur(0.5, 0.0, 0.5, 1.0),
 
   tlarge = ur(0.0, 0.0, 1.0, 0.66),
@@ -33,15 +33,15 @@ geos = {
 
   l3 = ur(0.0, 0.0, 0.33, 1.0),
   m3 = ur(0.33, 0.0, 0.33, 1.0),
-  r3 = ur(0.66, 0.0, 0.33, 1.0),
+  r3 = ur(0.67, 0.0, 0.33, 1.0),
 
   lt3 = ur(0.0, 0.0, 0.33, 0.5),
-  mt3 = ur(0.33, 0.0, 0.33, 0.5),
-  rt3 = ur(0.66, 0.0, 0.33, 0.5),
+  mt3 = ur(0.34, 0.0, 0.33, 0.5),
+  rt3 = ur(0.67, 0.0, 0.33, 0.5),
 
   lb3 = ur(0.0, 0.5, 0.33, 0.5),
-  mb3 = ur(0.33, 0.5, 0.33, 0.5),
-  rb3 = ur(0.66, 0.5, 0.33, 0.5),
+  mb3 = ur(0.34, 0.5, 0.33, 0.5),
+  rb3 = ur(0.67, 0.5, 0.33, 0.5),
 
   t3 = ur(0.0, 0.0, 1.0, 0.33),
   c3 = ur(0.0, 0.33, 1.0, 0.33),
@@ -261,6 +261,7 @@ local scnChange = hs.screen.watcher.new(
 
 bind(hyper, "d", function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, "i", function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
+bind(hyper, "m", function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, "p", function() hs.application.launchOrFocus(private.p_app) end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
