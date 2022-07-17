@@ -1,3 +1,21 @@
+-- Currently using private configuration included into config via
+-- `private = require("private")` in init.lua
+--
+-- This config table could, of course, be inlined within this file
+--
+-- sample urlconf format:
+-- urlconf = {
+--   mc = {
+--     pf = "Profile 2",
+--     matches = { "meet.google.com", "adp.com" },
+--   },
+--   int = {
+--     pf = "Profile 3",
+--     matches = { "myworkday.com", "outlook.office365.com", "microsoft.com" },
+--   }
+-- }
+
+
 -- open Chrome with a specific named Profile
 function openChromeWithProfile(profile, url)
   local t = hs.task.new(
