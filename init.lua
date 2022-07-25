@@ -60,10 +60,6 @@ layouts = {
     {"Firefox", nil, scn.screens[1], geos["fs"], nil, nil},
     {"Terminal", nil, scn.screens[1], geos["lhalf"], nil, nil},
   },
-  v2 = {
-    {"Slack", nil, scn.screens[2], geos["fs"], nil, nil},
-    {"Terminal", nil, scn.screens[1], geos["t3"], nil, nil},
-  },
   pcm2 = {
     {"Slack", nil, scn.screens[2], geos["fs"], nil, nil},
     {"Terminal", nil, scn.screens[1], geos["r3"], nil, nil},
@@ -218,7 +214,6 @@ bind(hmain, 'q', function()
   elseif #wins  > 1 then layoutWins(wins, layouts["r3s"])
   end
 end)
-bind(hmain, 'v', function() hs.layout.apply(layouts["v2"]) end)
 bind(hmain, 'm', function()
   hs.layout.apply(layouts["filemgmt"])
   layoutWins(getWF("Finder"):getWindows(),
