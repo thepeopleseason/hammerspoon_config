@@ -60,10 +60,6 @@ layouts = {
     {"Firefox", nil, scn.screens[1], geos["fs"], nil, nil},
     {"Terminal", nil, scn.screens[1], geos["lhalf"], nil, nil},
   },
-  home3 = {
-    {"zoom.us", nil, scn.screens[1], geos["l3"], nil, nil},
-    {"Slack", nil, scn.screens[2], geos["blarge"], nil, nil},
-  },
   v2 = {
     {"Slack", nil, scn.screens[2], geos["fs"], nil, nil},
     {"Terminal", nil, scn.screens[1], geos["t3"], nil, nil},
@@ -124,7 +120,7 @@ function getWF(app, filter)
   local wf=hs.window.filter
   filter = filter or {
     currentSpace=true,
-    rejectTitles={"Voice", "MCCal", "Slack"},
+    rejectTitles={"Voice", "MCCal", "Slack", "DAKboard"},
     visible=true
   }
 
@@ -238,7 +234,8 @@ bind(hmain, '3', function()
        layoutWins(getWF(browsers):getWindows(), layouts["halves"])
        layoutWins(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
                  {{geos["t3"], scn.screens[2]}})
-       hs.layout.apply(layouts["home3"])
+       layoutWins(getWF("Slack", {}):getWindows(),
+                  {{geos["blarge"], scn.screens[2]}})
      end)
 bind(hmain, '9', function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, '9', function() pane(hs.window.focusedWindow():application():allWindows()) end)
