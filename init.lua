@@ -51,7 +51,7 @@ geos = {
   termr = ur(0.7, 0.0, 0.29, 0.99),
 }
 
--- layouts for use with hs.layout.apply(), layoutWins(), and chain:link()
+-- layouts for use with hs.layout.apply(), placeWins(), and chain:link()
 layouts = {
   -- hs.layout.apply() layouts
   laptop = {
@@ -59,10 +59,6 @@ layouts = {
     {"Google Chrome", nil, scn.screens[1], geos["fs"], nil, nil},
     {"Firefox", nil, scn.screens[1], geos["fs"], nil, nil},
     {"Terminal", nil, scn.screens[1], geos["lhalf"], nil, nil},
-  },
-  pcm2 = {
-    {"Slack", nil, scn.screens[2], geos["fs"], nil, nil},
-    {"Terminal", nil, scn.screens[1], geos["r3"], nil, nil},
   },
   code2 = {
     {"Slack", nil, scn.screens[2], geos["bhalf"], nil, nil},
@@ -72,7 +68,7 @@ layouts = {
     {"Terminal", nil, scn.screens[1], geos["m3"], nil, nil},
   },
 
-  -- layoutWins() layouts
+  -- placeWins() layouts
   halves = {
     {geos["lhalf"], scn.screens[1]}, {geos["rhalf"], scn.screens[1]},
   },
@@ -144,7 +140,7 @@ local function moveOneSpace(dir)
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
 end
 
-local function layoutWins(wins, layout)
+local function placeWins(wins, layout)
   for i, win in ipairs(wins) do
     local layout_index = i
     if layout_index > #layout then layout_index = #layout end
@@ -161,11 +157,20 @@ local function adjust(dim, amt)
 end
 
 local function pane(wins)
-  if     #wins == 2 then layoutWins(wins, layouts["halves"])
-  elseif #wins == 3 then layoutWins(wins, layouts["thirds"])
-  elseif #wins == 4 then layoutWins(wins, layouts["quads"])
-  elseif #wins >= 5 then layoutWins(wins, layouts["sixths"])
+  if     #wins == 2 then placeWins(wins, layouts["halves"])
+  elseif #wins == 3 then placeWins(wins, layouts["thirds"])
+  elseif #wins == 4 then placeWins(wins, layouts["quads"])
+  elseif #wins >= 5 then placeWins(wins, layouts["sixths"])
   end
+end
+
+local function twoScreen(utilGeo, slackGeo)
+  placeWins(getWF("Terminal"):getWindows(),
+            {{geos["term"], scn.screens[1]}, {geos["termr"], scn.screens[1]}})
+  placeWins(getWF(browsers):getWindows(), layouts["halves"])
+  placeWins(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
+            {{geos[utilGeo], scn.screens[2]}})
+  placeWins(getWF("Slack", {}):getWindows(), {{geos[slackGeo], scn.screens[2]}})
 end
 
 -- common modifiers
@@ -208,49 +213,39 @@ bind({'ctrl', 'shift'}, 'up', function() chain:link(layouts["chain"]["full_grid"
 
 -- functional layout bindings
 bind(hmain, 'q', function()
-  layoutWins(getWF("zoom.us"):getWindows(), {{geos["l3"], scn.screens[1]}})
+  placeWins(getWF("zoom.us"):getWindows(), {{geos["l3"], scn.screens[1]}})
   wins = getWF():rejectApp("zoom.us"):getWindows()
-  if     #wins == 1 then layoutWins(wins, {{geos["rlarge"], scn.screens[1]}})
-  elseif #wins  > 1 then layoutWins(wins, layouts["r3s"])
+  if     #wins == 1 then placeWins(wins, {{geos["rlarge"], scn.screens[1]}})
+  elseif #wins  > 1 then placeWins(wins, layouts["r3s"])
   end
 end)
 bind(hmain, 'm', function()
   hs.layout.apply(layouts["filemgmt"])
-  layoutWins(getWF("Finder"):getWindows(),
+  placeWins(getWF("Finder"):getWindows(),
             {{geos["lt3"], scn.screens[1]}, {geos["lb3"], scn.screens[1]}})
-  layoutWins(getWF():rejectApp("Finder")
+  placeWins(getWF():rejectApp("Finder")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
 bind(hmain, '1', function() hs.layout.apply(layouts["laptop"]) end)
-bind(hmain, '2', function() hs.layout.apply(layouts["pcm2"]) end)
-bind(hmain, '3', function()
-       layoutWins(getWF("Terminal"):getWindows(),
-                 {{geos["term"], scn.screens[1]}, {geos["termr"], scn.screens[1]}})
-       layoutWins(getWF(browsers):getWindows(), layouts["halves"])
-       layoutWins(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
-                 {{geos["t3"], scn.screens[2]}})
-       layoutWins(getWF("Slack", {}):getWindows(),
-                  {{geos["blarge"], scn.screens[2]}})
-     end)
+bind(hmain, '2', function() twoScreen("t3", "fs") end)
+bind(hmain, '3', function() twoScreen("t3", "blarge") end)
+bind(hmain, '4', function() twoScreen("b3","tlarge") end)
 bind(hmain, '9', function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, '9', function() pane(hs.window.focusedWindow():application():allWindows()) end)
 
 -- browser organization
 local w3 = hs.hotkey.modal.new(hyper, 'w', "Browser layouts")
-w3:bind(nil, '2', function() layoutWins(getWF(browsers):getWindows(), layouts["halves"])
+w3:bind(nil, '2', function() placeWins(getWF(browsers):getWindows(), layouts["halves"])
            w3.exit() end)
-w3:bind(nil, '3', function() layoutWins(getWF(browsers):getWindows(), layouts["thirds"])
+w3:bind(nil, '3', function() placeWins(getWF(browsers):getWindows(), layouts["thirds"])
            w3.exit() end)
-w3:bind(nil, '4', function() layoutWins(getWF(browsers):getWindows(), layouts["quads"])
+w3:bind(nil, '4', function() placeWins(getWF(browsers):getWindows(), layouts["quads"])
            w3.exit() end)
-w3:bind(nil, '5', function() layoutWins(getWF(browsers):getWindows(), layouts["sixths"])
+w3:bind(nil, '5', function() placeWins(getWF(browsers):getWindows(), layouts["sixths"])
            w3.exit() end)
 w3:bind(nil, 'escape', function() w3:exit() hs.alert'Exit browser layout mode' end)
 
 -- watchers and utilities
-local scnChange = hs.screen.watcher.new(
-  function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
-
 bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
@@ -272,6 +267,9 @@ utils:bind(nil, 'l', function() hs.caffeinate.lockScreen() utils:exit() end)
 utils:bind(nil, 's', function() hs.caffeinate.systemSleep() utils:exit() end)
 utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
+
+local scnChange = hs.screen.watcher.new(
+  function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
 
 hs.hotkey.showHotkeys(hmain, 'k')
 

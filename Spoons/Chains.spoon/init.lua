@@ -43,7 +43,7 @@ local function _chainIterator(t, id, op)
   end
 end
 
---- Chains:chain()
+--- Chains:link()
 --- Method
 --- Move the focused window in sequence through a list of unitrect tables
 ---
