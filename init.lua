@@ -98,8 +98,8 @@ layouts = {
     down = {geos["bhalf"], geos["blarge"], geos["b3"]},
 
     full_grid = {
-      geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
       geos["l3"], geos["m3"], geos["r3"],
+      geos["ltq"], geos["rtq"], geos["lbq"], geos["rbq"],
       geos["lt3"], geos["mt3"], geos["rt3"],
       geos["lb3"], geos["mb3"], geos["rb3"],
       geos["t3"], geos["c3"], geos["b3"]
