@@ -229,7 +229,7 @@ end)
 bind(hmain, '1', function() hs.layout.apply(layouts["laptop"]) end)
 bind(hmain, '2', function() twoScreen("t3", "fs") end)
 bind(hmain, '3', function() twoScreen("t3", "blarge") end)
-bind(hmain, '4', function() twoScreen("b3","tlarge") end)
+bind(hmain, '4', function() twoScreen("b3", "tlarge") end)
 bind(hmain, '9', function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, '9', function() pane(hs.window.focusedWindow():application():allWindows()) end)
 
