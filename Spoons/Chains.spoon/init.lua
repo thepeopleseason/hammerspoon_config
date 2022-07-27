@@ -1,6 +1,6 @@
 --- === Chains ===
 ---
---- Use a single keybinding repeated to resize a window differently in sequence
+--- Use a single keybinding for multiple operations in sequence
 ---
 --- Inspired by the default keybindings in
 --- [Spectacle](https://github.com/eczarny/spectacle) and the
@@ -14,6 +14,13 @@
 ---                            hs.geometry.unitrect(0.5, 0.0, 0.5, 0.5),
 ---                            hs.geometry.unitrect(0.5, 0.5, 0.5, 0.5) }, "quads")
 --- end)
+---
+--- hs.hotkey.bind({"cmd","alt"}, "down",
+---   function() Chains.op({ function() hs.alert('First function') end,
+---                          function() hs.alert('Second function') end,
+---                          function() hs.alert('Third function') end,
+---                        }, "down")()
+---   end)
 --- ```
 
 local obj = {}
