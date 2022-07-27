@@ -27,7 +27,7 @@ local obj = {}
 
 -- Metadata
 obj.name = "Chains"
-obj.version = "1.0"
+obj.version = "1.2"
 obj.author = "James Hsiao <matchstick@gmail.com>"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
