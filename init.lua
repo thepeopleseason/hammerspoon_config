@@ -107,20 +107,6 @@ layouts = {
   },
 }
 
--- function chain sequences
-twoScreen_chain = {
-  function() twoScreen("t3", "fs") end,
-  function() twoScreen("t3", "blarge") end,
-  function() twoScreen("b3", "tlarge") end
-}
-
-browser_chain = {
-  function() placeWins(getWF(browsers):getWindows(), layouts["halves"]) end,
-  function() placeWins(getWF(browsers):getWindows(), layouts["thirds"]) end,
-  function() placeWins(getWF(browsers):getWindows(), layouts["quads"]) end,
-  function() placeWins(getWF(browsers):getWindows(), layouts["sixths"]) end,
-}
-
 -- window filter defaults
 function getWF(app, filter)
   local wf=hs.window.filter
@@ -186,6 +172,20 @@ local function twoScreen(utilGeo, slackGeo)
             {{geos[utilGeo], scn.screens[2]}})
   placeWins(getWF("Slack", {}):getWindows(), {{geos[slackGeo], scn.screens[2]}})
 end
+
+-- function chain sequences
+twoScreen_chain = {
+  function() twoScreen("t3", "blarge") end,
+  function() twoScreen("b3", "tlarge") end,
+  function() twoScreen("t3", "fs") end,
+}
+
+browser_chain = {
+  function() placeWins(getWF(browsers):getWindows(), layouts["halves"]) end,
+  function() placeWins(getWF(browsers):getWindows(), layouts["thirds"]) end,
+  function() placeWins(getWF(browsers):getWindows(), layouts["quads"]) end,
+  function() placeWins(getWF(browsers):getWindows(), layouts["sixths"]) end,
+}
 
 -- common modifiers
 local hyper = {"ctrl", "alt", "cmd"}
