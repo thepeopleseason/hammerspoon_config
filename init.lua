@@ -107,6 +107,20 @@ layouts = {
   },
 }
 
+-- function chain sequences
+twoScreen_chain = {
+  function() twoScreen("t3", "fs") end,
+  function() twoScreen("t3", "blarge") end,
+  function() twoScreen("b3", "tlarge") end
+}
+
+browser_chain = {
+  function() placeWins(getWF(browsers):getWindows(), layouts["halves"]) end,
+  function() placeWins(getWF(browsers):getWindows(), layouts["thirds"]) end,
+  function() placeWins(getWF(browsers):getWindows(), layouts["quads"]) end,
+  function() placeWins(getWF(browsers):getWindows(), layouts["sixths"]) end,
+}
+
 -- window filter defaults
 function getWF(app, filter)
   local wf=hs.window.filter
@@ -199,7 +213,7 @@ nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' en
 bind(hyper, 'left', function() hs.window.focusedWindow():moveOneScreenWest(false, true):focus() end)
 bind(hyper, 'right', function() hs.window.focusedWindow():moveOneScreenEast(false, true):focus() end)
 
--- chain bindings: resize current window based on a list of geometries
+-- resize chain bindings: resize current window based on a list of geometries
 bind(hmain, 'left', function() chain:link(layouts["chain"]["left"], "l") end)
 bind(hmain, 'right', function() chain:link(layouts["chain"]["right"], "r") end)
 bind(hmain, 'up', function() chain:link(layouts["chain"]["up"], "u") end)
@@ -226,24 +240,12 @@ bind(hmain, 'm', function()
   placeWins(getWF():rejectApp("Finder")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
+
 bind(hmain, '1', function() hs.layout.apply(layouts["laptop"]) end)
-bind(hmain, '2', function() twoScreen("t3", "fs") end)
-bind(hmain, '3', function() twoScreen("t3", "blarge") end)
-bind(hmain, '4', function() twoScreen("b3", "tlarge") end)
+bind(hmain, '2', function() chain:op(twoScreen_chain, '2')() end)
 bind(hmain, '9', function() pane(getWF(nil,{}):getWindows()) end)
 bind(hyper, '9', function() pane(hs.window.focusedWindow():application():allWindows()) end)
-
--- browser organization
-local w3 = hs.hotkey.modal.new(hyper, 'w', "Browser layouts")
-w3:bind(nil, '2', function() placeWins(getWF(browsers):getWindows(), layouts["halves"])
-           w3.exit() end)
-w3:bind(nil, '3', function() placeWins(getWF(browsers):getWindows(), layouts["thirds"])
-           w3.exit() end)
-w3:bind(nil, '4', function() placeWins(getWF(browsers):getWindows(), layouts["quads"])
-           w3.exit() end)
-w3:bind(nil, '5', function() placeWins(getWF(browsers):getWindows(), layouts["sixths"])
-           w3.exit() end)
-w3:bind(nil, 'escape', function() w3:exit() hs.alert'Exit browser layout mode' end)
+bind(hmain, 'w', function() chain:op(browser_chain, 'w')() end)
 
 -- watchers and utilities
 bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)

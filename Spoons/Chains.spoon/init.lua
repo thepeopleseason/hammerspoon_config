@@ -24,21 +24,21 @@ obj.version = "1.0"
 obj.author = "James Hsiao <matchstick@gmail.com>"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
-obj.windows = {}  -- a table of windows, current ops, and indices
+obj.chains = {}  -- a table of windows, current ops, and indices
 
 -- Internal iterator function to track
 local function _chainIterator(t, id, op)
   -- for any new operation -> clear and create new tracking table
-  if not (type(obj.windows[id]) == "table" and obj.windows[id][op]) then
-    obj.windows[id] = {}
-    obj.windows[id][op] = true
-    obj.windows[id]["index"] = 0
+  if not (type(obj.chains[id]) == "table" and obj.chains[id][op]) then
+    obj.chains[id] = {}
+    obj.chains[id][op] = true
+    obj.chains[id]["index"] = 0
   end
 
-  local i, n = obj.windows[id]["index"], #t
+  local i, n = obj.chains[id]["index"], #t
   return function()
     i = i % n + 1
-    obj.windows[id]["index"] = i
+    obj.chains[id]["index"] = i
     return t[i]
   end
 end
@@ -57,6 +57,21 @@ function obj:link(rectTable, operation)
   local win = hs.window.focusedWindow()
   local iter = _chainIterator(rectTable, win:id(), operation)
   win:move(iter()):focus()
+end
+
+--- Chains:op()
+--- Method
+--- Return the next function in sequence from a table
+---
+--- Parameters
+--- * funcTable - a table consisting of individual functions in a sequence
+--- * operation - a string to uniquely identify the operation
+---
+--- Returns:
+--- * an anonymous function to be executed
+function obj:op(funcTable, operation)
+  local iter = _chainIterator(funcTable, operation, operation)
+  return iter()
 end
 
 return obj
