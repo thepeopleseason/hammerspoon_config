@@ -112,7 +112,7 @@ function getWF(app, filter)
   local wf=hs.window.filter
   filter = filter or {
     currentSpace=true,
-    rejectTitles={"Voice", "MCCal", "Slack", "DAKboard"},
+    rejectTitles={"Voice", "MCCal", "Slack", "DAKboard", private.p_app},
     visible=true
   }
 
@@ -120,6 +120,22 @@ function getWF(app, filter)
     return wf.new(app):setOverrideFilter(filter)
   else
     return wf.new(false):setDefaultFilter(filter)
+  end
+end
+
+windowPos = {}
+local function saveWindowPositions()
+  for key, value in ipairs(hs.window.allWindows()) do
+    table.insert(windowPos, { value:id(), value:size(), value:topLeft() })
+  end
+end
+
+local function restoreWindowPositions()
+  for key, value in ipairs(windowPos) do
+    local win = hs.window.get(value[1])
+    if win then
+      win:move(hs.geometry.new(value[2], value[3]))
+    end
   end
 end
 
@@ -266,7 +282,9 @@ utils:bind(nil, 'n', function()
   utils:exit()
 end)
 utils:bind(nil, 'l', function() hs.caffeinate.lockScreen() utils:exit() end)
+utils:bind(nil, 'r', function() restoreWindowPositions() utils:exit() end)
 utils:bind(nil, 's', function() hs.caffeinate.systemSleep() utils:exit() end)
+utils:bind(nil, 'w', function() saveWindowPositions() utils:exit() end)
 utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
