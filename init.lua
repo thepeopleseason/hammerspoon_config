@@ -132,10 +132,11 @@ local function saveWindowPositions()
 end
 
 local function restoreWindowPositions()
-  for k, v in ipairs(windowPos) do
-    local win = hs.window.get(v[1])
+  for k, v in pairs(windowPos) do
+    local win = hs.window.get(k)
     if win then
-      win:move(hs.geometry.new(v[2], v[3]))
+      win:move(hs.geometry.new(v[1], v[2]))
+      hs.console.printStyledtext(win:title(), hs.inspect(v[1]), hs.inspect(v[2]))
     end
   end
 end
