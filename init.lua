@@ -123,21 +123,32 @@ function getWF(app, filter)
   end
 end
 
+-- window positions
 windowPos = {}
 local function saveWindowPositions()
-  for key, value in ipairs(hs.window.allWindows()) do
-    table.insert(windowPos, { value:id(), value:size(), value:topLeft() })
+  for k, v in ipairs(hs.window.allWindows()) do
+    windowPos[v:id()] = { v:size(), v:topLeft() }
   end
 end
 
 local function restoreWindowPositions()
-  for key, value in ipairs(windowPos) do
-    local win = hs.window.get(value[1])
+  for k, v in ipairs(windowPos) do
+    local win = hs.window.get(v[1])
     if win then
-      win:move(hs.geometry.new(value[2], value[3]))
+      win:move(hs.geometry.new(v[2], v[3]))
     end
   end
 end
+
+function caffeineWatcher(eventType)
+  saveWindowPositions()
+  if (eventType == hs.caffeinate.watcher.screensDidUnlock) then
+    hs.console.printStyledtext("Restoring window positions.")
+    restoreWindowPositions()
+  end
+end
+caffeinateWatcher = hs.caffeinate.watcher.new(caffeineWatcher)
+caffeinateWatcher:start()
 
 local function moveOneSpace(dir)
   local win = hs.window.focusedWindow()
