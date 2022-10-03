@@ -136,7 +136,6 @@ local function restoreWindowPositions()
     local win = hs.window.get(k)
     if win then
       win:move(hs.geometry.new(v[1], v[2]))
-      hs.console.printStyledtext(win:title(), hs.inspect(v[1]), hs.inspect(v[2]))
     end
   end
 end
