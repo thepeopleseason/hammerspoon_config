@@ -280,6 +280,7 @@ bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function() hs.application.launchOrFocus(private.p_app) end)
+bind(hyper, 's', function() hs.caffeinate.startScreensaver() end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() u.switchAudio() utils:exit() end)

@@ -56,36 +56,38 @@ function cleanURL(url)
 end
 
 function handleHTTP(scheme, host, params, url, sender)
-  -- remove tracking and other unwanted URL cruft
-  if string.match(url, "?") then url = cleanURL(url) end
+  if string.match(scheme, "http") then
+    -- remove tracking and other unwanted URL cruft
+    if string.match(url, "?") then url = cleanURL(url) end
 
-  -- Spotify
-  if string.match(host, "open.spotify.com") then
-    openSpotify(url)
-    return true
-  end
+    -- Spotify
+    if string.match(host, "open.spotify.com") then
+      openSpotify(url)
+      return true
+    end
 
-  -- Zoom
-  if string.match(url, "zoom.us/j") then
-    hs.urlevent.openURLWithBundle(url, "us.zoom.xos")
-    return true
-  end
+    -- Zoom
+    if string.match(url, "zoom.us/j") then
+      hs.urlevent.openURLWithBundle(url, "us.zoom.xos")
+      return true
+    end
 
-  if hs.eventtap.checkKeyboardModifiers()["cmd"] or
-    hs.fnutils.some(private.urlconf["mc"]["matches"], function(el)
-                      if string.match(url, el) then return true end end)
-  then
-    openChromeWithProfile(private.urlconf["mc"]["pf"], url)
-    return true
-  end
+    if hs.eventtap.checkKeyboardModifiers()["cmd"] or
+      hs.fnutils.some(private.urlconf["mc"]["matches"], function(el)
+                        if string.match(url, el) then return true end end)
+    then
+      openChromeWithProfile(private.urlconf["mc"]["pf"], url)
+      return true
+    end
 
-  if hs.eventtap.checkKeyboardModifiers()["shift"] or
-    hs.fnutils.some(private.urlconf["int"]["matches"],
-                    function(el)
-                      if string.match(url, el) then return true end end)
-  then
-    openChromeWithProfile(private.urlconf["int"]["pf"], url)
-    return true
+    if hs.eventtap.checkKeyboardModifiers()["shift"] or
+      hs.fnutils.some(private.urlconf["int"]["matches"],
+                      function(el)
+                        if string.match(url, el) then return true end end)
+    then
+      openChromeWithProfile(private.urlconf["int"]["pf"], url)
+      return true
+    end
   end
 
   -- Default
