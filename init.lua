@@ -307,4 +307,3 @@ hs.hotkey.showHotkeys(hmain, 'k')
 
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert'Config loaded'
-
