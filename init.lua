@@ -123,33 +123,6 @@ function getWF(app, filter)
   end
 end
 
--- window positions
-windowPos = {}
-local function saveWindowPositions()
-  for k, v in ipairs(hs.window.allWindows()) do
-    windowPos[v:id()] = { v:size(), v:topLeft() }
-  end
-end
-
-local function restoreWindowPositions()
-  for k, v in pairs(windowPos) do
-    local win = hs.window.get(k)
-    if win then
-      win:move(hs.geometry.new(v[1], v[2]))
-    end
-  end
-end
-
-function caffeineWatcher(eventType)
-  saveWindowPositions()
-  if (eventType == hs.caffeinate.watcher.screensDidUnlock) then
-    hs.console.printStyledtext("Restoring window positions.")
-    restoreWindowPositions()
-  end
-end
-caffeinateWatcher = hs.caffeinate.watcher.new(caffeineWatcher)
-caffeinateWatcher:start()
-
 local function moveOneSpace(dir)
   local win = hs.window.focusedWindow()
   local uuid = win:screen():getUUID()
@@ -279,7 +252,6 @@ bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function() hs.application.launchOrFocus(private.p_app) end)
-bind(hyper, 's', function() hs.caffeinate.startScreensaver() end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() u.switchAudio() utils:exit() end)
@@ -295,13 +267,13 @@ utils:bind(nil, 'n', function()
 end)
 utils:bind(nil, 'l', function() hs.caffeinate.lockScreen() utils:exit() end)
 utils:bind(nil, 'r', function() restoreWindowPositions() utils:exit() end)
-utils:bind(nil, 's', function() hs.caffeinate.systemSleep() utils:exit() end)
+utils:bind(nil, 's', function() hs.caffeinate.lockScreen() utils:exit() end)
 utils:bind(nil, 'w', function() saveWindowPositions() utils:exit() end)
 utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
-local scnChange = hs.screen.watcher.new(
-  function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
+-- local scnChange = hs.screen.watcher.new(
+--   function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
 
 hs.hotkey.showHotkeys(hmain, 'k')
 
