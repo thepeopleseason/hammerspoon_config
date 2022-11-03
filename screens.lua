@@ -7,6 +7,7 @@ obj.mbpScreen = "Built-in Retina Display"
 obj.samsungScreen = "S23C570"
 obj.dellScreen = "DELL U3419W"
 obj.miamiScreen = "HP S2031"
+obj.mcScreen = "DELL U2715H"
 
 obj.screens = {}
 obj.mc = nil
@@ -21,6 +22,8 @@ function obj.init()
     obj.screens = { hs.screen(obj.dellScreen), hs.screen(obj.samsungScreen) }
   elseif hs.screen(obj.miamiScreen) then
     obj.screens = { hs.screen(obj.miamiScreen), hs.screen(obj.mbpScreen) }
+  elseif hs.screen(obj.mcScreen) then
+    obj.screens = { hs.screen(obj.mcScreen), hs.screen(obj.mbpScreen) }
   else
     obj.screens = { hs.screen(obj.mbpScreen), hs.screen(obj.mbpScreen) }
   end
