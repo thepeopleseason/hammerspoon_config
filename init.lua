@@ -164,10 +164,10 @@ local function pane(wins)
   end
 end
 
-local function twoScreen(utilGeo, slackGeo)
+local function twoScreen(utilGeo, slackGeo, browserGeo)
   placeWins(getWF("Terminal"):getWindows(),
             {{geos["term"], scn.screens[1]}, {geos["termr"], scn.screens[1]}})
-  placeWins(getWF(browsers):getWindows(), layouts["halves"])
+  placeWins(getWF(browsers):getWindows(), browserGeo)
   placeWins(getWF(browsers, {allowTitles={"Voice", "MCCal"}}):getWindows(),
             {{geos[utilGeo], scn.screens[2]}})
   placeWins(getWF("Slack", {}):getWindows(), {{geos[slackGeo], scn.screens[2]}})
@@ -175,9 +175,9 @@ end
 
 -- function chain sequences
 twoScreen_chain = {
-  function() twoScreen("t3", "blarge") end,
-  function() twoScreen("b3", "tlarge") end,
-  function() twoScreen("t3", "fs") end,
+  function() twoScreen("t3", "blarge", layouts["halves"]) end,
+  function() twoScreen("b3", "tlarge", layouts["halves"]) end,
+  function() twoScreen("fs", "fs", {{geos["llarge"], scn.screens[1]}}) end,
 }
 
 browser_chain = {
