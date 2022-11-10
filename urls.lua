@@ -60,7 +60,7 @@ function handleHTTP(scheme, host, params, url, sender)
   if string.match(url, "?") then url = cleanURL(url) end
 
   -- Spotify
-  if string.match(host, "open.spotify.com") then
+  if string.match(url, "open.spotify.com") then
     openSpotify(url)
     return true
   end

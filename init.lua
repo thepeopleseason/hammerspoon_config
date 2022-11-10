@@ -7,7 +7,6 @@ private = require("private")
 scn = require("screens").init()
 u = require("utils")
 url = require("urls")
-x11 = require("x11CopyPaste").start()
 chain = spoon.Chains
 
 local bind = hs.hotkey.bind
