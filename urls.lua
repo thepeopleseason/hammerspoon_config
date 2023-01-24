@@ -56,6 +56,8 @@ function cleanURL(url)
 end
 
 function handleHTTP(scheme, host, params, url, sender)
+  hs.console.printStyledtext(url);
+
   -- remove tracking and other unwanted URL cruft
   if string.match(url, "?") then url = cleanURL(url) end
 
@@ -84,20 +86,18 @@ function handleHTTP(scheme, host, params, url, sender)
     return true
   end
 
-  if string.match(scheme, "http") then
-    if hs.fnutils.some(private.urlconf["mc"]["matches"], function(el)
-                         if string.match(url, el) then return true end end)
-    then
-      openChromeWithProfile(private.urlconf["mc"]["pf"], url)
-      return true
-    end
+  if hs.fnutils.some(private.urlconf["mc"]["matches"], function(el)
+                       if string.match(url, el) then return true end end)
+  then
+    openChromeWithProfile(private.urlconf["mc"]["pf"], url)
+    return true
+  end
 
-    if hs.fnutils.some(private.urlconf["int"]["matches"], function(el)
-                         if string.match(url, el) then return true end end)
-    then
-      openChromeWithProfile(private.urlconf["int"]["pf"], url)
-      return true
-    end
+  if hs.fnutils.some(private.urlconf["int"]["matches"], function(el)
+                       if string.match(url, el) then return true end end)
+  then
+    openChromeWithProfile(private.urlconf["int"]["pf"], url)
+    return true
   end
 
   -- Default
