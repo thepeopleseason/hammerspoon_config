@@ -1,6 +1,3 @@
-hs.loadSpoon("Caffeine")
-spoon.Caffeine:start()
-
 local obj = {}
 
 obj.mbpScreen = "Built-in Retina Display"
@@ -30,7 +27,7 @@ function obj.init()
   return obj
 end
 
-function obj.switchMonitorInput(caffeinate)
+function obj.switchMonitorInput()
   local cInput = "27"
   local nInput
 
@@ -41,10 +38,8 @@ function obj.switchMonitorInput(caffeinate)
 
   if cInput == "27" then
     nInput = "17" -- switch to HDMI 1
-    if caffeinate then spoon.Caffeine:setState(true) end
   else
     nInput = "27" -- switch to USB-C
-    if caffeinate then spoon.Caffeine:setState(false) end
   end
   hs.execute("/usr/local/bin/m1ddc display " .. obj.mainDdcID .. " set input " .. nInput)
 end

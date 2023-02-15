@@ -249,7 +249,7 @@ bind(hmain, 'w', function() chain:op(browser_chain, 'w')() end)
 
 -- watchers and utilities
 bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
+bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput() end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function() hs.application.launchOrFocus(private.p_app) end)
 
@@ -258,7 +258,7 @@ utils:bind(nil, 'a', function() u.switchAudio() utils:exit() end)
 utils:bind(nil, 'c', function() hs.toggleConsole() utils:exit() end)
 utils:bind(nil, 'h', function() hs.alert(hs.host.localizedName()) utils:exit() end)
 utils:bind(nil, 'i', function()
-  if scn.mainDdcID then scn.switchMonitorInput(false) end
+  if scn.mainDdcID then scn.switchMonitorInput() end
   utils:exit()
 end)
 utils:bind(nil, 'n', function()
