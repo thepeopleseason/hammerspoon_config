@@ -39,9 +39,15 @@ geos = {
   mt3 = ur(0.333, 0.0, 0.333, 0.5),
   rt3 = ur(0.666, 0.0, 0.333, 0.5),
 
+  lt6 = ur(0.0, 0.0, 0.666, 0.5),
+  rt6 = ur(0.333, 0.0, 0.666, 0.5),
+
   lb3 = ur(0.0, 0.5, 0.333, 0.5),
   mb3 = ur(0.333, 0.5, 0.333, 0.5),
   rb3 = ur(0.666, 0.5, 0.333, 0.5),
+
+  lb6 = ur(0.0, 0.5, 0.666, 0.5),
+  rb6 = ur(0.333, 0.5, 0.666, 0.5),
 
   t3 = ur(0.0, 0.0, 1.0, 0.333),
   c3 = ur(0.0, 0.333, 1.0, 0.333),
@@ -92,10 +98,18 @@ layouts = {
   -- chain sequences (see Chains.spoon)
   chain = {
     term = {geos["term"], geos["termr"]},
-    left = {geos["lhalf"], geos["llarge"], geos["l3"]},
-    right = {geos["rhalf"], geos["rlarge"], geos["r3"]},
+
+    lu = {geos["lt3"], geos["lt6"], geos["ltq"]},
     up = {geos["thalf"], geos["tlarge"], geos["t3"]},
+    ru = {geos["rt3"], geos["rt6"], geos["rtq"]},
+
+    left = {geos["lhalf"], geos["llarge"], geos["l3"]},
+    center = {geos["fs"], geos["m3"]},
+    right = {geos["rhalf"], geos["rlarge"], geos["r3"]},
+
+    ld = {geos["lb3"], geos["lb6"], geos["lbq"]},
     down = {geos["bhalf"], geos["blarge"], geos["b3"]},
+    rd = {geos["rb3"], geos["rb6"], geos["rbq"]},
 
     full_grid = {
       geos["l3"], geos["m3"], geos["r3"],
@@ -214,10 +228,19 @@ bind(hyper, 'left', function() hs.window.focusedWindow():moveOneScreenWest(false
 bind(hyper, 'right', function() hs.window.focusedWindow():moveOneScreenEast(false, true):focus() end)
 
 -- resize chain bindings: resize current window based on a list of geometries
-bind(hmain, 'left', function() chain:link(layouts["chain"]["left"], "l") end)
-bind(hmain, 'right', function() chain:link(layouts["chain"]["right"], "r") end)
+bind(hmain, 'pad7', function() chain:link(layouts["chain"]["lu"], "lu") end)
+bind(hmain, 'pad8', function() chain:link(layouts["chain"]["up"], "u") end)
 bind(hmain, 'up', function() chain:link(layouts["chain"]["up"], "u") end)
+bind(hmain, 'pad9', function() chain:link(layouts["chain"]["ru"], "ru") end)
+bind(hmain, 'left', function() chain:link(layouts["chain"]["left"], "l") end)
+bind(hmain, 'pad4', function() chain:link(layouts["chain"]["left"], "l") end)
+bind(hmain, 'pad5', function() chain:link(layouts["chain"]["center"], "c") end)
+bind(hmain, 'right', function() chain:link(layouts["chain"]["right"], "r") end)
+bind(hmain, 'pad6', function() chain:link(layouts["chain"]["right"], "r") end)
+bind(hmain, 'pad1', function() chain:link(layouts["chain"]["ld"], "ld") end)
 bind(hmain, 'down', function() chain:link(layouts["chain"]["down"], "d") end)
+bind(hmain, 'pad2', function() chain:link(layouts["chain"]["down"], "d") end)
+bind(hmain, 'pad3', function() chain:link(layouts["chain"]["rd"], "rd") end)
 bind(hmain, 't', function() chain:link(layouts["chain"]["term"], "t") end)
 
 -- other bindings
