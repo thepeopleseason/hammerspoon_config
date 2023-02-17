@@ -244,9 +244,9 @@ bind(hmain, 'pad3', function() chain:link(layouts["chain"]["rd"], "rd") end)
 bind(hmain, 't', function() chain:link(layouts["chain"]["term"], "t") end)
 
 -- other bindings
-bind({'ctrl', 'shift'}, 'left', function() moveOneSpace("left") end)
-bind({'ctrl', 'shift'}, 'right', function() moveOneSpace("right") end)
-bind({'ctrl', 'shift'}, 'up', function() chain:link(layouts["chain"]["full_grid"], "g") end)
+bind({'ctrl', 'alt'}, 'left', function() moveOneSpace("left") end)
+bind({'ctrl', 'alt'}, 'right', function() moveOneSpace("right") end)
+bind({'ctrl', 'alt'}, 'up', function() chain:link(layouts["chain"]["full_grid"], "g") end)
 
 -- functional layout bindings
 bind(hmain, 'q', function()
