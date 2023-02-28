@@ -275,8 +275,10 @@ bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput() end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function()
-  hs.application.open(private.p_app, 3, true)
-  hs.axuielement.applicationElement(hs.application(private.p_app)).AXWindows[1].AXChildren[11]:setAttributeValue("AXFocused", true)
+  hs.application.launchOrFocus(private.p_app)
+  if hs.application(private.p_app):isFrontmost() then
+    hs.axuielement.applicationElement(hs.application(private.p_app)).AXWindows[1].AXChildren[11]:setAttributeValue("AXFocused", true)
+  end
 end)
 
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
@@ -297,9 +299,6 @@ utils:bind(nil, 's', function() hs.caffeinate.lockScreen() utils:exit() end)
 utils:bind(nil, 'w', function() saveWindowPositions() utils:exit() end)
 utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
-
--- local scnChange = hs.screen.watcher.new(
---   function() hs.reload() hs.alert'Screen update, config reloaded' end):start()
 
 hs.hotkey.showHotkeys(hmain, 'k')
 
