@@ -286,7 +286,6 @@ end)
 utils:bind(nil, 'l', function() hs.caffeinate.lockScreen() utils:exit() end)
 utils:bind(nil, 'r', function() restoreWindowPositions() utils:exit() end)
 utils:bind(nil, 's', function() hs.caffeinate.lockScreen() utils:exit() end)
-utils:bind(nil, 'w', function() saveWindowPositions() utils:exit() end)
 utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
