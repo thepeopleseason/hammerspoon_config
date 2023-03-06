@@ -101,7 +101,8 @@ function handleHTTP(scheme, host, params, url, sender)
   end
 
   -- Default
-  hs.urlevent.openURLWithBundle(url, "org.mozilla.firefox")
+  --hs.urlevent.openURLWithBundle(url, "org.mozilla.firefox")
+  openChromeWithProfile("Profile 1", url)
   return true
 end
 
