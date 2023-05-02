@@ -152,6 +152,7 @@ local function moveOneSpace(dir)
     if nIdx > #screenTable then nIdx = #screenTable end
   end
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
+  hs.eventtap.keyStroke({"cmd","shift"}, dir)
 end
 
 local function placeWins(wins, layout)
@@ -294,10 +295,8 @@ bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput() end e
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function()
   hs.application.launchOrFocus(private.p_app)
-  local app = hs.application(private.p_app)
-  if app:isFrontmost() then
-    hs.axuielement.applicationElement(app).AXWindows[1][11].AXFocused = true
-  end
+  hs.timer.doAfter(5, private.focus_p)
+  private.focus_p();
 end)
 
 hs.hotkey.showHotkeys(hmain, 'k')
