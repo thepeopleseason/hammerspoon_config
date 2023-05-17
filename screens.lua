@@ -4,7 +4,7 @@ obj.mbpScreen = "Built-in Retina Display"
 obj.samsungScreen = "S23C570"
 obj.dellScreen = "DELL U3419W"
 obj.miamiScreen = "HP S2031"
-obj.mcScreen = "DELL U2715H"
+obj.mcScreen = "DELL U3417W"
 
 obj.screens = {}
 obj.mc = nil
