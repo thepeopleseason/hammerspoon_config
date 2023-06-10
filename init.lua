@@ -293,11 +293,13 @@ utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' 
 bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput() end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
+bind(hyper, 'o', function() private.emit_p() end)
 bind(hyper, 'p', function()
   hs.application.launchOrFocus(private.p_app)
   hs.timer.doAfter(5, private.focus_p)
   private.focus_p();
 end)
+
 
 hs.hotkey.showHotkeys(hmain, 'k')
 
