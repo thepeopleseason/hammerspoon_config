@@ -294,13 +294,10 @@ bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
 bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput() end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function() private.focus_p() end)
-bind(
-  hyper, 'v',
-  function()
-    hs.osascript.applescriptFromFile("/Users/jhsiao/.hammerspoon/bin/vpn.scpt")
-  end)
+bind(hyper, 'v', function() private.toggle_v() end)
 
 hs.hotkey.showHotkeys(hmain, 'k')
 
 hs.ipc.cliStatus() -- load IPC for commandline util
 hs.alert'Config loaded'
+
