@@ -230,18 +230,23 @@ bind(hyper, 'right', function() hs.window.focusedWindow():moveOneScreenEast(fals
 
 -- resize chain bindings: resize current window based on a list of geometries
 bind(hmain, 'pad7', function() chain:link(layouts["chain"]["lu"], "lu") end)
+bind(hmain, 'home', function() chain:link(layouts["chain"]["lu"], "lu") end)
 bind(hmain, 'pad8', function() chain:link(layouts["chain"]["up"], "u") end)
 bind(hmain, 'up', function() chain:link(layouts["chain"]["up"], "u") end)
 bind(hmain, 'pad9', function() chain:link(layouts["chain"]["ru"], "ru") end)
+bind(hmain, 'pageup', function() chain:link(layouts["chain"]["ru"], "ru") end)
 bind(hmain, 'left', function() chain:link(layouts["chain"]["left"], "l") end)
 bind(hmain, 'pad4', function() chain:link(layouts["chain"]["left"], "l") end)
 bind(hmain, 'pad5', function() chain:link(layouts["chain"]["center"], "c") end)
+bind(hmain, 'forwarddelete', function() chain:link(layouts["chain"]["center"], "c") end)
 bind(hmain, 'right', function() chain:link(layouts["chain"]["right"], "r") end)
 bind(hmain, 'pad6', function() chain:link(layouts["chain"]["right"], "r") end)
 bind(hmain, 'pad1', function() chain:link(layouts["chain"]["ld"], "ld") end)
+bind(hmain, 'end', function() chain:link(layouts["chain"]["ld"], "ld") end)
 bind(hmain, 'down', function() chain:link(layouts["chain"]["down"], "d") end)
 bind(hmain, 'pad2', function() chain:link(layouts["chain"]["down"], "d") end)
 bind(hmain, 'pad3', function() chain:link(layouts["chain"]["rd"], "rd") end)
+bind(hmain, 'pagedown', function() chain:link(layouts["chain"]["rd"], "rd") end)
 bind(hmain, 't', function() chain:link(layouts["chain"]["term"], "t") end)
 
 -- other bindings
