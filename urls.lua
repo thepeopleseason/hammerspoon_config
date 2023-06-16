@@ -6,14 +6,27 @@
 -- sample urlconf format:
 -- urlconf = {
 --   mc = {
---     pf = "Profile 2",
+--     profile = "Profile 2",
 --     matches = { "meet.google.com", "adp.com" },
 --   },
 --   int = {
---     pf = "Profile 3",
+--     profile = "Profile 3",
 --     matches = { "myworkday.com", "outlook.office365.com", "microsoft.com" },
 --   }
 -- }
+-- modconf = {
+--   mc = {
+--     key = "cmd",
+--     profile = "Profile 2",
+--   },
+--   int = {
+--     key = "shift",
+--     profile = "Profile 10",
+--   }
+-- }
+
+urlconf = private.urlconf
+modconf = private.modconf
 
 
 -- open Chrome with a specific named Profile
@@ -61,6 +74,15 @@ function handleHTTP(scheme, host, params, url, sender)
   -- remove tracking and other unwanted URL cruft
   if string.match(url, "?") then url = cleanURL(url) end
 
+  -- handle modkeys
+  for k in pairs(modconf) do
+    if hs.eventtap.checkKeyboardModifiers()[modconf[k]["key"]]
+    then
+      openChromeWithProfile(modconf[k]["profile"], url)
+      return true
+    end
+  end
+
   -- Spotify
   if string.match(url, "open.spotify.com") then
     openSpotify(url)
@@ -73,31 +95,13 @@ function handleHTTP(scheme, host, params, url, sender)
     return true
   end
 
-  -- handle modkeys
-  if hs.eventtap.checkKeyboardModifiers()["cmd"]
-  then
-    openChromeWithProfile(private.urlconf["mc"]["pf"], url)
-    return true
-  end
-
-  if hs.eventtap.checkKeyboardModifiers()["shift"]
-  then
-    openChromeWithProfile(private.urlconf["int"]["pf"], url)
-    return true
-  end
-
-  if hs.fnutils.some(private.urlconf["mc"]["matches"], function(el)
-                       if string.match(url, el) then return true end end)
-  then
-    openChromeWithProfile(private.urlconf["mc"]["pf"], url)
-    return true
-  end
-
-  if hs.fnutils.some(private.urlconf["int"]["matches"], function(el)
-                       if string.match(url, el) then return true end end)
-  then
-    openChromeWithProfile(private.urlconf["int"]["pf"], url)
-    return true
+  for k in pairs(urlconf) do
+    if hs.fnutils.some(urlconf[k]["matches"], function(el)
+                         if string.match(url, el) then return true end end)
+    then
+      openChromeWithProfile(urlconf[k]["profile"], url)
+      return true
+    end
   end
 
   -- Default
