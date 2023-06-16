@@ -5,29 +5,23 @@
 --
 -- sample urlconf format:
 -- urlconf = {
---   mc = {
+--   {
 --     profile = "Profile 2",
---     matches = { "meet.google.com", "adp.com" },
+--     matches = { "meet.google.com", "adp.com", "file:///.*mystuff.html" },
 --   },
---   int = {
+--   {
 --     profile = "Profile 3",
 --     matches = { "myworkday.com", "outlook.office365.com", "microsoft.com" },
 --   }
 -- }
--- modconf = {
---   mc = {
---     key = "cmd",
---     profile = "Profile 2",
---   },
---   int = {
---     key = "shift",
---     profile = "Profile 10",
---   }
--- }
 
 urlconf = private.urlconf
-modconf = private.modconf
-
+modconf = {
+  { key = "cmd",
+    profile = "Profile 2" },
+  { key = "shift",
+    profile = "Profile 10" }
+}
 
 -- open Chrome with a specific named Profile
 function openChromeWithProfile(profile, url)
@@ -75,10 +69,10 @@ function handleHTTP(scheme, host, params, url, sender)
   if string.match(url, "?") then url = cleanURL(url) end
 
   -- handle modkeys
-  for k in pairs(modconf) do
-    if hs.eventtap.checkKeyboardModifiers()[modconf[k]["key"]]
+  for i=1,#modconf do
+    if hs.eventtap.checkKeyboardModifiers()[modconf[i]["key"]]
     then
-      openChromeWithProfile(modconf[k]["profile"], url)
+      openChromeWithProfile(modconf[i]["profile"], url)
       return true
     end
   end
@@ -95,11 +89,11 @@ function handleHTTP(scheme, host, params, url, sender)
     return true
   end
 
-  for k in pairs(urlconf) do
-    if hs.fnutils.some(urlconf[k]["matches"], function(el)
-                         if string.match(url, el) then return true end end)
+  for i=1,#urlconf do
+    if hs.fnutils.some(urlconf[i]["matches"],
+                       function(re) if string.match(url, re) then return true end end)
     then
-      openChromeWithProfile(urlconf[k]["profile"], url)
+      openChromeWithProfile(urlconf[i]["profile"], url)
       return true
     end
   end
