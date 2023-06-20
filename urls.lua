@@ -17,9 +17,9 @@
 
 urlconf = private.urlconf
 modconf = {
-  { key = "cmd",
+  { key = { "cmd"},
     profile = "Profile 2" },
-  { key = "shift",
+  { key = { "shift" },
     profile = "Profile 10" }
 }
 
@@ -70,7 +70,8 @@ function handleHTTP(scheme, host, params, url, sender)
 
   -- handle modkeys
   for i=1,#modconf do
-    if hs.eventtap.checkKeyboardModifiers()[modconf[i]["key"]]
+    if hs.fnutils.every(modconf[i].key,
+                        function(key) return hs.eventtap.checkKeyboardModifiers()[key] end)
     then
       openChromeWithProfile(modconf[i]["profile"], url)
       return true
