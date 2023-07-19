@@ -17,7 +17,7 @@
 
 urlconf = private.urlconf
 modconf = {
-  { key = { "cmd"},
+  { key = { "cmd" },
     profile = "Profile 2" },
   { key = { "shift" },
     profile = "Profile 10" }
