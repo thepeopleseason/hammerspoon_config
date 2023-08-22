@@ -38,6 +38,13 @@ function obj.switchMonitorInput()
 
   if cInput == "27" then
     nInput = "17" -- switch to HDMI 1
+    hs.task.new(
+      os.getenv("HOME") .. "/.hammerspoon/bin/check_sshd",
+      function (exitCode, out, err)
+        if exitCode == 1 then
+          hs.osascript.applescript([[do shell script "launchctl load -w /System/Library/LaunchDaemons/ssh.plist" with administrator privileges]])
+        end
+      end):start():waitUntilExit()
   else
     nInput = "27" -- switch to USB-C
   end
