@@ -1,3 +1,6 @@
+hs.loadSpoon("Caffeine")
+spoon.Caffeine:start()
+
 local obj = {}
 
 obj.mbpScreen = "Built-in Retina Display"
@@ -27,7 +30,7 @@ function obj.init()
   return obj
 end
 
-function obj.switchMonitorInput()
+function obj.switchMonitorInput(caffeinate)
   local cInput = "27"
   local nInput
 
@@ -38,11 +41,10 @@ function obj.switchMonitorInput()
 
   if cInput == "27" then
     nInput = "17" -- switch to HDMI 1
-    if not os.execute("netstat -anl|grep '*.22'") then
-      hs.osascript.applescript([[do shell script "launchctl load -w /System/Library/LaunchDaemons/ssh.plist" with administrator privileges]])
-    end
+    if caffeinate then spoon.Caffeine:setState(true) end
   else
     nInput = "27" -- switch to USB-C
+    if caffeinate then spoon.Caffeine:setState(false) end
   end
   hs.execute("/usr/local/bin/m1ddc display " .. obj.mainDdcID .. " set input " .. nInput)
 end

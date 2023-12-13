@@ -152,7 +152,7 @@ local function moveOneSpace(dir)
     if nIdx > #screenTable then nIdx = #screenTable end
   end
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
-  hs.eventtap.keyStroke({"cmd","shift"}, dir)
+  hs.spaces.gotoSpace(screenTable[nIdx])
 end
 
 local function placeWins(wins, layout)
@@ -253,6 +253,8 @@ bind(hmain, 't', function() chain:link(layouts["chain"]["term"], "t") end)
 bind({'ctrl', 'alt'}, 'left', function() moveOneSpace("left") end)
 bind({'ctrl', 'alt'}, 'right', function() moveOneSpace("right") end)
 bind({'ctrl', 'alt'}, 'up', function() chain:link(layouts["chain"]["full_grid"], "g") end)
+bind({'ctrl', 'alt'}, 'down', function() hs.window.focusedWindow():sendToBack() end)
+
 
 -- functional layout bindings
 bind(hmain, 'q', function()
@@ -296,7 +298,7 @@ utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 
 bind(hyper, 'd', function() hs.eventtap.keyStrokes(os.date('%Y-%m-%d')) end)
-bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput() end end)
+bind(hyper, 'i', function() if scn.mainDdcID then scn.switchMonitorInput(true) end end)
 bind(hyper, 'm', function() hs.application.launchOrFocus("monitorControl") end)
 bind(hyper, 'p', function() private.focus_p() end)
 bind(hyper, 'v', function() private.toggle_v() end)
