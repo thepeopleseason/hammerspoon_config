@@ -63,7 +63,15 @@ end
 function obj:link(rectTable, operation)
   local win = hs.window.focusedWindow()
   local iter = _chainIterator(rectTable, win:id(), operation)
+  local axApp = hs.axuielement.applicationElement(win:application())
+  local wasEnhanced = axApp.AXEnhancedUserInterface
+  if wasEnhanced then
+    axApp.AXEnhancedUserInterface = false
+  end
   win:move(iter()):focus()
+  if wasEnhanced then
+    axApp.AXEnhancedUserInterface = wasEnhanced
+  end
 end
 
 --- Chains:op()

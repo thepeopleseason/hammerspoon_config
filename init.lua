@@ -155,6 +155,24 @@ local function moveOneSpace(dir)
   hs.spaces.gotoSpace(screenTable[nIdx])
 end
 
+local function moveScreen(dir)
+  local win = hs.window.focusedWindow()
+  local axApp = hs.axuielement.applicationElement(win:application())
+  local wasEnhanced = axApp.AXEnhancedUserInterface
+  if wasEnhanced then
+    axApp.AXEnhancedUserInterface = false
+  end
+  if dir == "left" then
+    win:moveOneScreenWest(false, true)
+  elseif dir == "right" then
+    win:moveOneScreenEast(false, true)
+  end
+  if wasEnhanced then
+    axApp.AXEnhancedUserInterface = wasEnhanced
+  end
+  win:focus()
+end
+
 local function placeWins(wins, layout)
   for i, win in ipairs(wins) do
     local layout_index = i
@@ -225,8 +243,8 @@ nudge:bind(nil, 'down', function() adjust("y", 50) end)
 nudge:bind(nil, 'escape', function() nudge:exit() hs.alert'Exited nudge mode' end)
 
 -- throw bindings: move current window one screen to the left/right
-bind(hyper, 'left', function() hs.window.focusedWindow():moveOneScreenWest(false, true):focus() end)
-bind(hyper, 'right', function() hs.window.focusedWindow():moveOneScreenEast(false, true):focus() end)
+bind(hyper, 'left', function() moveScreen("left") end)
+bind(hyper, 'right', function() moveScreen("right") end)
 
 -- resize chain bindings: resize current window based on a list of geometries
 bind(hmain, 'pad7', function() chain:link(layouts["chain"]["lu"], "lu") end)
@@ -254,7 +272,6 @@ bind({'ctrl', 'alt'}, 'left', function() moveOneSpace("left") end)
 bind({'ctrl', 'alt'}, 'right', function() moveOneSpace("right") end)
 bind({'ctrl', 'alt'}, 'up', function() chain:link(layouts["chain"]["full_grid"], "g") end)
 bind({'ctrl', 'alt'}, 'down', function() hs.window.focusedWindow():sendToBack() end)
-
 
 -- functional layout bindings
 bind(hmain, 'q', function()
