@@ -104,7 +104,7 @@ layouts = {
     ru = {geos["rt3"], geos["rt6"], geos["rtq"]},
 
     left = {geos["lhalf"], geos["llarge"], geos["l3"]},
-    center = {geos["fs"], geos["m3"]},
+    center = {geos["fs"], geos["m3"], geos["c3"]},
     right = {geos["rhalf"], geos["rlarge"], geos["r3"]},
 
     ld = {geos["lb3"], geos["lb6"], geos["lbq"]},
@@ -231,7 +231,6 @@ resize:bind(nil, 'right', function() adjust("w", 20) end)
 resize:bind(nil, 'up', function() adjust("h", -20) end)
 resize:bind(nil, 'down', function() adjust("h", 20) end)
 resize:bind(nil, 'escape', function() resize:exit() hs.alert'Exited resize mode' end)
-bind(hmain, 'f', function() hs.window.focusedWindow():maximize() end)
 
 -- nudge modal bindings: hyper-n to enter mode
 -- (move windows 50 pixels in a given direction without resizing)
@@ -257,6 +256,7 @@ bind(hmain, 'left', function() chain:link(layouts["chain"]["left"], "l") end)
 bind(hmain, 'pad4', function() chain:link(layouts["chain"]["left"], "l") end)
 bind(hmain, 'pad5', function() chain:link(layouts["chain"]["center"], "c") end)
 bind(hmain, 'forwarddelete', function() chain:link(layouts["chain"]["center"], "c") end)
+bind(hmain, 'f', function() chain:link(layouts["chain"]["center"], "c") end)
 bind(hmain, 'right', function() chain:link(layouts["chain"]["right"], "r") end)
 bind(hmain, 'pad6', function() chain:link(layouts["chain"]["right"], "r") end)
 bind(hmain, 'pad1', function() chain:link(layouts["chain"]["ld"], "ld") end)
