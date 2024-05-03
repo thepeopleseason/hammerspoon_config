@@ -8,6 +8,8 @@ obj.samsungScreen = "S23C570"
 obj.homeScreen = "DELL U3419W"
 obj.miamiScreen = "HP S2031"
 obj.mcScreen = "DELL U3417W"
+obj.atl1Screen = "C34J79x"
+obj.atl2Screen = "VG27A"
 
 obj.screens = {}
 obj.mc = nil
@@ -24,6 +26,15 @@ function obj.init()
     obj.screens = { hs.screen(obj.miamiScreen), hs.screen(obj.mbpScreen) }
   elseif hs.screen(obj.mcScreen) then
     obj.screens = { hs.screen(obj.mcScreen), hs.screen(obj.mbpScreen) }
+  elseif hs.screen(obj.atl1Screen) then
+    obj.screens = { hs.screen(obj.atl1Screen), hs.screen(obj.mbpScreen) }
+  elseif hs.screen(obj.atl2Screen) then
+    scr = hs.screen.allScreens()
+    if scr[1]:currentMode()["h"] == "2560" then
+      obj.screens = { scr[2], scr[1] }
+    else
+      obj.screens = { scr[1], scr[2] }
+    end
   else
     obj.screens = { hs.screen(obj.mbpScreen), hs.screen(obj.mbpScreen) }
   end
