@@ -208,8 +208,8 @@ end
 
 -- function chain sequences
 twoScreen_chain = {
-  function() twoScreen("t3", "blarge", layouts["halves"]) end,
-  function() twoScreen("b3", "tlarge", layouts["halves"]) end,
+  function() twoScreen("tlarge", "blarge", layouts["halves"]) end,
+  function() twoScreen("blarge", "tlarge", layouts["halves"]) end,
   function() twoScreen("fs", "fs", {{geos["llarge"], scn.screens[1]}}) end,
 }
 
