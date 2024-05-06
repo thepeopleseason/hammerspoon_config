@@ -285,7 +285,7 @@ bind(hmain, 'm', function()
   hs.layout.apply(layouts["filemgmt"])
   placeWins(getWF("Finder"):getWindows(),
             {{geos["lt3"], scn.screens[1]}, {geos["lb3"], scn.screens[1]}})
-  placeWins(getWF():rejectApp("Finder")
+  placeWins(getWF():rejectApp("Finder"):rejectApp("PingID")
             :rejectApp("Terminal"):getWindows(), layouts["r3s"])
 end)
 
