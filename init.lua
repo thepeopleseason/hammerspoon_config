@@ -151,6 +151,7 @@ local function moveOneSpace(dir)
     nIdx = cIndex + 1
     if nIdx > #screenTable then nIdx = #screenTable end
   end
+  print(screenTable)
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
   hs.spaces.gotoSpace(screenTable[nIdx])
 end
