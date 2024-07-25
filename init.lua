@@ -300,6 +300,7 @@ bind(hmain, 'w', function() chain:op(browser_chain, 'w')() end)
 local utils = hs.hotkey.modal.new(hyper, 'u', "Utility mode")
 utils:bind(nil, 'a', function() u.switchAudio() utils:exit() end)
 utils:bind(nil, 'c', function() hs.toggleConsole() utils:exit() end)
+utils:bind(nil, 'd', function() hs.alert(scn.screenList) utils:exit() end)
 utils:bind(nil, 'h', function() hs.alert(hs.host.localizedName()) utils:exit() end)
 utils:bind(nil, 'i', function()
   if scn.mainDdcID then scn.switchMonitorInput() end
