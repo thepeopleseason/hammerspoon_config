@@ -151,7 +151,6 @@ local function moveOneSpace(dir)
     nIdx = cIndex + 1
     if nIdx > #screenTable then nIdx = #screenTable end
   end
-  print(screenTable)
   hs.spaces.moveWindowToSpace(win:id(), screenTable[nIdx])
   hs.spaces.gotoSpace(screenTable[nIdx])
 end
@@ -310,9 +309,6 @@ utils:bind(nil, 'n', function()
   hs.network.ping.ping("8.8.8.8", 1, 0.01, 1.0, "any", u.pingResult)
   utils:exit()
 end)
-utils:bind(nil, 'l', function() hs.caffeinate.lockScreen() utils:exit() end)
-utils:bind(nil, 'r', function() restoreWindowPositions() utils:exit() end)
-utils:bind(nil, 's', function() hs.caffeinate.lockScreen() utils:exit() end)
 utils:bind(nil, '0', function() hs.reload() utils:exit() end)
 utils:bind(nil, 'escape', function() utils:exit() hs.alert'Exited utility mode' end)
 

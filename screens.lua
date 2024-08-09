@@ -1,6 +1,3 @@
-hs.loadSpoon("Caffeine")
-spoon.Caffeine:start()
-
 local obj = {}
 
 obj.mbpScreen = "Built-in Retina Display"
@@ -29,11 +26,9 @@ function obj.init()
   scr = hs.screen.allScreens()
   if #scr == 3 then
     if hs.screen(obj.mia1Screen) then
-      print (hs.inspect(obj.screens))
       obj.screens = { hs.screen(obj.mia1Screen),
                       hs.screen(obj.mia2Screen),
                       scr[1] }
-      print (hs.inspect(obj.screens))
     elseif hs.screen(obj.atl2Screen) then
       if scr[2]:currentMode()["h"] == "2560" then
         obj.screens = { scr[3], scr[2], scr[1] }
@@ -62,8 +57,7 @@ function obj.init()
     obj.screens = { scr[1], scr[1] }
   end
 
-  obj.screenList = table.concat(
-    hs.fnutils.imap(obj.screens, function(e) print(e:name()) return e:name() end), ":")
+  obj.screenList = table.concat(hs.fnutils.imap(obj.screens, function(e) return e:name() end), ":")
 
   return obj
 end
