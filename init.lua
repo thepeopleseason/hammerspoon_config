@@ -9,6 +9,7 @@ u = require("utils")
 url = require("urls")
 chain = spoon.Chains
 
+hs.hotkey.setLogLevel('warning')
 local bind = hs.hotkey.bind
 local browsers = {"Google Chrome", "Firefox"}
 
