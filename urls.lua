@@ -63,8 +63,6 @@ function cleanURL(url)
 end
 
 function handleHTTP(scheme, host, params, url, sender)
-  print("handleHTTP:"..url)
-
   -- remove tracking and other unwanted URL cruft
   if string.match(url, "?") then url = cleanURL(url) end
 
